@@ -1,0 +1,1 @@
+Xây dựng đối tượng trả về cho clients

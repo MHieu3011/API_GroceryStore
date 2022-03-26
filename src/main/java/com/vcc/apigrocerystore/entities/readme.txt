@@ -1,0 +1,1 @@
+Chứa các thực thể thể hiện các bảng trong cơ sở dữ liệu
