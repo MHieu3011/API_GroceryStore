@@ -1,5 +1,6 @@
 package com.vcc.apigrocerystore.controller;
 
+import com.vcc.apigrocerystore.model.request.UserFormRequest;
 import com.vcc.apigrocerystore.model.request.UserRegistrationForm;
 import com.vcc.apigrocerystore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,37 @@ public class UserController extends BaseController {
 
         try {
             serverResponse = userService.createUser(userRegistrationForm);
+
+            strResponse = gson.toJson(serverResponse);
+            requestLogger.info("Finish Usercontroller.create {}", requestUri);
+            return new ResponseEntity<>(strResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            eLogger.error("UserController.create error: {}", e.getMessage());
+        }
+        strResponse = gson.toJson(new Object());
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/android", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> createByAndroid(
+            @RequestParam("username") String userName,
+            @RequestParam("full_name") String fullName,
+            @RequestParam("password") String password,
+            @RequestParam("address") String address,
+            HttpServletRequest request
+    ) {
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Object serverResponse;
+
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setRequestUri(requestUri);
+            form.setUserName(userName);
+            form.setFullName(fullName);
+            form.setPassword(password);
+            form.setAddress(address);
+            serverResponse = userService.createUserByAndroid(form);
 
             strResponse = gson.toJson(serverResponse);
             requestLogger.info("Finish Usercontroller.create {}", requestUri);
