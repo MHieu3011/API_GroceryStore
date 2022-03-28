@@ -1,6 +1,6 @@
 package com.vcc.apigrocerystore.entities;
 
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
     private String userName;
     private String fullName;
@@ -9,6 +9,14 @@ public class UserEntity {
     private int role;
 
     public UserEntity() {
+    }
+
+    public UserEntity(String userName, String fullName, String password, String address, int role) {
+        this.userName = userName;
+        this.fullName = fullName;
+        this.password = password;
+        this.address = address;
+        this.role = role;
     }
 
     public String getUserName() {

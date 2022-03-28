@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AbstractDao {
+public class AbstractDAO {
     protected static final Logger eLogger = LogManager.getLogger("ErrorLog");
 
     public void releaseConnectAndStatement(Connection connection, PreparedStatement statement) {

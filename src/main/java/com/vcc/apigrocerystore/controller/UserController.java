@@ -1,5 +1,6 @@
 package com.vcc.apigrocerystore.controller;
 
+import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
 import com.vcc.apigrocerystore.model.request.UserRegistrationForm;
 import com.vcc.apigrocerystore.service.UserService;
@@ -19,30 +20,10 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
+    private static final String ERROR_OCCURRED = "an error occurred";
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
-            @RequestBody @Valid UserRegistrationForm userRegistrationForm,
-            HttpServletRequest request
-    ) {
-        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
-        String strResponse;
-        Object serverResponse;
-
-        try {
-            serverResponse = userService.createUser(userRegistrationForm);
-
-            strResponse = gson.toJson(serverResponse);
-            requestLogger.info("Finish Usercontroller.create {}", requestUri);
-            return new ResponseEntity<>(strResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            eLogger.error("UserController.create error: {}", e.getMessage());
-        }
-        strResponse = gson.toJson(new Object());
-        return new ResponseEntity<>(strResponse, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/android", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> createByAndroid(
             @RequestParam("username") String userName,
             @RequestParam("full_name") String fullName,
             @RequestParam("password") String password,
@@ -51,7 +32,7 @@ public class UserController extends BaseController {
     ) {
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
         String strResponse;
-        Object serverResponse;
+        Response serverResponse;
 
         try {
             UserFormRequest form = new UserFormRequest();
@@ -60,15 +41,38 @@ public class UserController extends BaseController {
             form.setFullName(fullName);
             form.setPassword(password);
             form.setAddress(address);
-            serverResponse = userService.createUserByAndroid(form);
+            serverResponse = userService.create(form);
 
-            strResponse = gson.toJson(serverResponse);
-            requestLogger.info("Finish Usercontroller.create {}", requestUri);
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.create {}", requestUri);
             return new ResponseEntity<>(strResponse, HttpStatus.OK);
         } catch (Exception e) {
             eLogger.error("UserController.create error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }
-        strResponse = gson.toJson(new Object());
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/body", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> createByRequestBody(
+            @RequestBody @Valid UserRegistrationForm userRegistrationForm,
+            HttpServletRequest request
+    ) {
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+
+        try {
+            serverResponse = userService.createByRequestBody(userRegistrationForm);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.create {}", requestUri);
+            return new ResponseEntity<>(strResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            eLogger.error("UserController.create error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
 }

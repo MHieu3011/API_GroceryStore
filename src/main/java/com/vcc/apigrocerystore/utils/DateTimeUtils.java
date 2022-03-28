@@ -9,7 +9,7 @@ public class DateTimeUtils {
     private DateTimeUtils() {
     }
 
-    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
     /**
      * generate time in yyyy-MM-dd format
