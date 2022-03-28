@@ -1,5 +1,6 @@
 package com.vcc.apigrocerystore.controller;
 
+import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
 import com.vcc.apigrocerystore.model.request.UserRegistrationForm;
@@ -20,8 +21,6 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
-    private static final String ERROR_OCCURRED = "an error occurred";
-
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("username") String userName,
@@ -30,6 +29,7 @@ public class UserController extends BaseController {
             @RequestParam("address") String address,
             HttpServletRequest request
     ) {
+        StopWatch stopWatch = new StopWatch();
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
         String strResponse;
         Response serverResponse;
@@ -45,9 +45,8 @@ public class UserController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.create {}", requestUri);
-            return new ResponseEntity<>(strResponse, HttpStatus.OK);
         } catch (Exception e) {
-            eLogger.error("UserController.create error: {}", e.getMessage());
+            eLogger.error("UserController.create error: {} in {}", e.getMessage(), stopWatch.stop());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
@@ -58,6 +57,7 @@ public class UserController extends BaseController {
             @RequestBody @Valid UserRegistrationForm userRegistrationForm,
             HttpServletRequest request
     ) {
+        StopWatch stopWatch = new StopWatch();
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
         String strResponse;
         Response serverResponse;
@@ -66,8 +66,7 @@ public class UserController extends BaseController {
             serverResponse = userService.createByRequestBody(userRegistrationForm);
 
             strResponse = gson.toJson(serverResponse, Response.class);
-            requestLogger.info("Finish UserController.create {}", requestUri);
-            return new ResponseEntity<>(strResponse, HttpStatus.OK);
+            requestLogger.info("Finish UserController.create {} in {}", requestUri, stopWatch.stop());
         } catch (Exception e) {
             eLogger.error("UserController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

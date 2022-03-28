@@ -13,6 +13,8 @@ public abstract class BaseController {
     protected static final Logger eLogger = LogManager.getLogger("ErrorLog");
     protected static final Logger cLogger = LogManager.getLogger("CacheLog");
 
+    protected static final String ERROR_OCCURRED = "an error occurred";
+
     protected Gson gson;
 
     protected BaseController() {

@@ -1,16 +1,16 @@
 package com.vcc.apigrocerystore.entities;
 
-public class StoreHouse extends BaseEntity {
+public class StoreHouseEntity extends BaseEntity {
 
     private long idItem;
     private String codeItem;
     private int number;
     private long date;
 
-    public StoreHouse() {
+    public StoreHouseEntity() {
     }
 
-    public StoreHouse(long idItem, String codeItem, int number, long date) {
+    public StoreHouseEntity(long idItem, String codeItem, int number, long date) {
         this.idItem = idItem;
         this.codeItem = codeItem;
         this.number = number;

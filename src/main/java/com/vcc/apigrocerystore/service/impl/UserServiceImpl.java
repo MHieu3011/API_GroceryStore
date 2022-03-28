@@ -25,6 +25,8 @@ public class UserServiceImpl extends AbstractService implements UserService {
         String userName = form.getUserName();
         String fullName = form.getFullName();
         String password = form.getPassword();
+        String address = form.getAddress();
+        int role = 0;
         if (CommonUtils.checkEmpty(userName)) {
             throw new CommonException(ErrorCode.USER_NAME_MUST_NOT_EMPTY, "username must not empty");
         }
@@ -39,8 +41,8 @@ public class UserServiceImpl extends AbstractService implements UserService {
         entity.setUserName(userName);
         entity.setFullName(fullName);
         entity.setPassword(password);
-        entity.setAddress(form.getAddress());
-        entity.setRole(0);
+        entity.setAddress(address);
+        entity.setRole(role);
         userDAO.create(entity);
 
         return new Response.Builder(1, HttpStatus.OK.value())

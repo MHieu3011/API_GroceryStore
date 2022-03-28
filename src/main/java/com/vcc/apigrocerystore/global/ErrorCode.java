@@ -12,4 +12,6 @@ public class ErrorCode {
     public static final int ITEM_CODE_MUST_NOT_EMPTY = 606;
     public static final int ITEM_PRICE_MUST_LONG = 607;
     public static final int ITEM_BRAND_MUST_NOT_EMPTY = 608;
+    public static final int CODE_ITEM_MUST_NOT_EMPTY = 609;
+    public static final int NUMBER_MUST_SMALLER_0 = 610;
 }

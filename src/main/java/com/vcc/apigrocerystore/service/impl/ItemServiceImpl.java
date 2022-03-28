@@ -25,6 +25,7 @@ public class ItemServiceImpl extends AbstractService implements ItemService {
     public Response create(ItemFormRequest form) throws Exception {
         //validate dữ liệu đầu vào
         String code = form.getCode();
+        String name = form.getName();
         String strFromDate = form.getFromDate();
         String strToDate = form.getToDate();
         long price = form.getPrice();
@@ -53,7 +54,6 @@ public class ItemServiceImpl extends AbstractService implements ItemService {
         ItemEntity entity = new ItemEntity();
         long fromDate = DateTimeUtils.getTimeInSecs(form.getFromDate());
         long toDate = DateTimeUtils.getTimeInSecs(form.getToDate());
-        String name = form.getName();
         entity.setCode(code);
         entity.setName(name);
         entity.setFromDate(fromDate);

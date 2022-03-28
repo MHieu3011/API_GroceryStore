@@ -14,6 +14,7 @@ public class AbstractDAO {
     public void releaseConnectAndStatement(Connection connection, PreparedStatement statement) {
         if (connection != null) {
             try {
+                connection.setAutoCommit(true);
                 connection.close();
             } catch (SQLException e) {
                 eLogger.error("ERROR closing connection: {}", e.getMessage());
@@ -29,20 +30,7 @@ public class AbstractDAO {
     }
 
     protected void releaseResource(Connection connection, PreparedStatement statement, ResultSet resultSet) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                eLogger.error("ERROR closing connection: {}", e.getMessage());
-            }
-        }
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                eLogger.error("ERROR closing statement: {}", e.getMessage());
-            }
-        }
+        releaseConnectAndStatement(connection, statement);
         if (resultSet != null) {
             try {
                 resultSet.close();

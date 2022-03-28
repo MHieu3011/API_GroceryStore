@@ -82,6 +82,12 @@
             <artifactId>joda-time</artifactId>
             <version>2.9.9</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.ecyrd.speed4j</groupId>
+            <artifactId>speed4j</artifactId>
+            <version>0.18</version>
+        </dependency>
     </dependencies>
 
     <build>

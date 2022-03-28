@@ -2,8 +2,8 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
-import com.vcc.apigrocerystore.model.request.ItemFormRequest;
-import com.vcc.apigrocerystore.service.ItemService;
+import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
+import com.vcc.apigrocerystore.service.StoreHouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,45 +16,39 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/item")
-public class ItemController extends BaseController {
+@RequestMapping("/storehouse")
+public class StoreHouseController extends BaseController {
 
     @Autowired
-    private ItemService itemService;
+    private StoreHouseService storeHouseService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
-            @RequestParam("code") String code,
-            @RequestParam("name") String name,
-            @RequestParam("from_date") String fromDate,
-            @RequestParam("to_date") String toDate,
-            @RequestParam("price") int price,
-            @RequestParam("brand") String brand,
+            @RequestParam("id_item") long idItem,
+            @RequestParam("code_item") String codeItem,
+            @RequestParam("number") int number,
+            @RequestParam("date") String date,
             HttpServletRequest request
     ) {
         StopWatch stopWatch = new StopWatch();
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
         String strResponse;
         Response serverResponse;
-
         try {
-            ItemFormRequest form = new ItemFormRequest();
+            StoreHouseFormRequest form = new StoreHouseFormRequest();
             form.setRequestUri(requestUri);
-            form.setCode(code);
-            form.setName(name);
-            form.setFromDate(fromDate);
-            form.setToDate(toDate);
-            form.setPrice(price);
-            form.setBrand(brand);
-            serverResponse = itemService.create(form);
+            form.setIdItem(idItem);
+            form.setCodeItem(codeItem);
+            form.setNumber(number);
+            form.setDate(date);
+            serverResponse = storeHouseService.create(form);
 
             strResponse = gson.toJson(serverResponse, Response.class);
-            requestLogger.info("Finish ItemController.create {} in {}", requestUri, stopWatch.stop());
+            requestLogger.info("Finish StoreHouseController.create: {} in {}", requestUri, stopWatch.stop());
         } catch (Exception e) {
-            eLogger.error("ItemController.create error: {}", e.getMessage());
+            eLogger.error("StoreHouseController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
-
 }

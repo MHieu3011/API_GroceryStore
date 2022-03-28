@@ -1,15 +1,15 @@
 package com.vcc.apigrocerystore.entities;
 
-public class BillDetail extends BaseEntity {
+public class BillDetailEntity extends BaseEntity {
 
     private long idBill;
     private long idItem;
     private int number;
 
-    public BillDetail() {
+    public BillDetailEntity() {
     }
 
-    public BillDetail(long idBill, long idItem, int number) {
+    public BillDetailEntity(long idBill, long idItem, int number) {
         this.idBill = idBill;
         this.idItem = idItem;
         this.number = number;
