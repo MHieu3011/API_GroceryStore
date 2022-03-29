@@ -14,4 +14,7 @@ public class ErrorCode {
     public static final int ITEM_BRAND_MUST_NOT_EMPTY = 608;
     public static final int CODE_ITEM_MUST_NOT_EMPTY = 609;
     public static final int NUMBER_MUST_SMALLER_0 = 610;
+    public static final int PHONE_NUMBER_MUST_NOT_EMPTY = 611;
+    public static final int PHONE_NUMBER_MUST_NUMBER = 612;
+
 }
