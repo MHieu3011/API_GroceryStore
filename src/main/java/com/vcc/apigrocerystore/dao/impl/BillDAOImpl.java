@@ -27,7 +27,9 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
-            connection.rollback();
+            if (connection != null) {
+                connection.rollback();
+            }
             eLogger.error("Error insert bill: {}", e.getMessage());
         } finally {
             releaseConnectAndStatement(connection, statement);

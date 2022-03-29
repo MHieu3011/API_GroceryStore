@@ -18,15 +18,27 @@ public class BillDetailDAOImpl extends AbstractDAO implements BillDetailDAO {
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO billdetail(idbill, iditem, number) VALUES (?, ?, ?)";
-            statement = connection.prepareStatement(sql);
-            statement.setLong(1, entity.getIdBill());
+            String sql1 = "UPDATE storehouse s SET s.number = s.number - ? WHERE s.iditem = ? AND s.number >= ? LIMIT 1";
+            statement = connection.prepareStatement(sql1);
+            statement.setInt(1, entity.getNumber());
             statement.setLong(2, entity.getIdItem());
             statement.setInt(3, entity.getNumber());
-            statement.executeUpdate();
-            connection.commit();
+            int check = statement.executeUpdate();
+            if (check > 0) {
+                String sql = "INSERT INTO billdetail(idbill, iditem, number) VALUES (?, ?, ?)";
+                statement = connection.prepareStatement(sql);
+                statement.setLong(1, entity.getIdBill());
+                statement.setLong(2, entity.getIdItem());
+                statement.setInt(3, entity.getNumber());
+                statement.executeUpdate();
+                connection.commit();
+            } else {
+                eLogger.error("Error insert billDetail: There are no more items with id = {} in store house", entity.getIdItem());
+            }
         } catch (Exception e) {
-            connection.rollback();
+            if (connection != null) {
+                connection.rollback();
+            }
             eLogger.error("Error insert billDetail: {}", e.getMessage());
         } finally {
             releaseConnectAndStatement(connection, statement);

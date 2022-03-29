@@ -24,7 +24,9 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
-            connection.rollback();
+            if (connection != null) {
+                connection.rollback();
+            }
             eLogger.error("Error insert customer: {}", e.getMessage());
         } finally {
             releaseConnectAndStatement(connection, statement);

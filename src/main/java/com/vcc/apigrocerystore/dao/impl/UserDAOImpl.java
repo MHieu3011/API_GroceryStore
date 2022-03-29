@@ -29,7 +29,9 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             connection.commit();
         } catch (Exception e) {
             eLogger.error("Error insert user: {}", e.getMessage());
-            connection.rollback();
+            if (connection != null) {
+                connection.rollback();
+            }
         } finally {
             releaseConnectAndStatement(connection, statement);
         }

@@ -27,7 +27,9 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
             connection.commit();
         } catch (Exception e) {
             eLogger.error("Error insert store house: {}", e.getMessage());
-            connection.rollback();
+            if (connection != null) {
+                connection.rollback();
+            }
         } finally {
             releaseConnectAndStatement(connection, statement);
         }
