@@ -6,19 +6,31 @@ import com.google.gson.annotations.SerializedName;
 public class StoreHouseInfoItemResponse {
 
     @Expose
-    @SerializedName("code_item")
-    private String codeItem;
+    @SerializedName("name")
+    private String name;
+
+    @Expose
+    @SerializedName("brand")
+    private String brand;
 
     @Expose
     @SerializedName("numbers")
     private String numbers;
 
-    public String getCodeItem() {
-        return codeItem;
+    public String getName() {
+        return name;
     }
 
-    public void setCodeItem(String codeItem) {
-        this.codeItem = codeItem;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getNumbers() {

@@ -3,6 +3,7 @@ package com.vcc.apigrocerystore.dao.impl;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
+import com.vcc.apigrocerystore.model.response.StoreHouseInfoItemResponse;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -39,24 +40,28 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
     }
 
     @Override
-    public List<StoreHouseEntity> findItemBestSeller(long fromDate, long toDate, String keyword, int limit) throws Exception {
-        List<StoreHouseEntity> resultList = new ArrayList<>();
+    public List<StoreHouseInfoItemResponse> findItemBestSeller(long fromDate, long toDate, String keyword, int limit) throws Exception {
+        List<StoreHouseInfoItemResponse> resultList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
-            String sql = "SELECT codeitem, sum(number) numbers FROM storehouse WHERE date BETWEEN ? AND ? GROUP BY codeitem ORDER BY numbers " + keyword + " LIMIT ?";
-            statement = connection.prepareStatement(sql);
+            StringBuilder sql = new StringBuilder("SELECT i.name AS name, i.brand AS brand, sum(s.number) AS numbers");
+            sql.append(" FROM storehouse s, item i");
+            sql.append(" WHERE s.codeitem = i.code AND s.iditem = i.id AND date BETWEEN ? AND ?");
+            sql.append(" GROUP BY s.codeitem");
+            sql.append(" ORDER BY numbers " + keyword + " LIMIT ?");
+            statement = connection.prepareStatement(sql.toString());
             statement.setLong(1, fromDate);
             statement.setLong(2, toDate);
-//            statement.setString(3, keyword);
             statement.setInt(3, limit);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                StoreHouseEntity result = new StoreHouseEntity();
-                result.setCodeItem(resultSet.getString("codeitem"));
-                result.setNumber(resultSet.getInt("numbers"));
+                StoreHouseInfoItemResponse result = new StoreHouseInfoItemResponse();
+                result.setName(resultSet.getString("name"));
+                result.setBrand(resultSet.getString("brand"));
+                result.setNumbers(resultSet.getInt("numbers") + "");
                 resultList.add(result);
             }
         } catch (Exception e) {

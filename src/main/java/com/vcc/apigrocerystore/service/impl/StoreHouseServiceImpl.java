@@ -1,6 +1,5 @@
 package com.vcc.apigrocerystore.service.impl;
 
-import com.vcc.apigrocerystore.adapter.EntityAdapter;
 import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
@@ -18,16 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StoreHouseServiceImpl extends AbstractService implements StoreHouseService {
 
     @Autowired
     private StoreHouseDAO storeHouseDAO;
-
-    @Autowired
-    private EntityAdapter<StoreHouseEntity, StoreHouseInfoItemResponse> storeHouseInfoItemAdapter;
 
     @Override
     public Response create(StoreHouseFormRequest form) throws Exception {
@@ -89,10 +84,7 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
 
         long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
         long toDate = DateTimeUtils.getTimeInSecs(strToDate);
-        List<StoreHouseInfoItemResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit)
-                .stream()
-                .map(entity -> storeHouseInfoItemAdapter.transform(entity))
-                .collect(Collectors.toList());
+        List<StoreHouseInfoItemResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)
