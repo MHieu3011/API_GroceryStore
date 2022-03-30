@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
@@ -35,5 +38,37 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
         } finally {
             releaseConnectAndStatement(connection, statement);
         }
+    }
+
+    @Override
+    public List<ItemEntity> findAll() throws Exception {
+        List<ItemEntity> resultList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT code, name, fromdate, todate, price, brand FROM item";
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                ItemEntity result = new ItemEntity();
+                result.setCode(resultSet.getString("code"));
+                result.setName(resultSet.getString("name"));
+                result.setFromDate(resultSet.getLong("fromdate"));
+                result.setToDate(resultSet.getLong("todate"));
+                result.setPrice(resultSet.getLong("price"));
+                result.setBrand(resultSet.getString("brand"));
+                resultList.add(result);
+            }
+        } catch (Exception e) {
+            eLogger.error("Error ItemDAO.findAll item: {}", e.getMessage());
+            if (connection != null) {
+                connection.rollback();
+            }
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return resultList;
     }
 }

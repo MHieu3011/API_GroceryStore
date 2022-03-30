@@ -54,4 +54,24 @@ public class ItemController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll(
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+
+            serverResponse = itemService.findAll();
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish ItemController.findAll {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("ItemController.findAll error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
 }

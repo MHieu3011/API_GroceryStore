@@ -6,7 +6,7 @@ import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
-import com.vcc.apigrocerystore.model.response.StoreHouseInfoItemResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
 import com.vcc.apigrocerystore.service.StoreHouseService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
@@ -84,7 +84,7 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
 
         long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
         long toDate = DateTimeUtils.getTimeInSecs(strToDate);
-        List<StoreHouseInfoItemResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
+        List<InfoItemBestSellerResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)

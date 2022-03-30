@@ -3,7 +3,7 @@ package com.vcc.apigrocerystore.dao.impl;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
-import com.vcc.apigrocerystore.model.response.StoreHouseInfoItemResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -40,8 +40,8 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
     }
 
     @Override
-    public List<StoreHouseInfoItemResponse> findItemBestSeller(long fromDate, long toDate, String keyword, int limit) throws Exception {
-        List<StoreHouseInfoItemResponse> resultList = new ArrayList<>();
+    public List<InfoItemBestSellerResponse> findItemBestSeller(long fromDate, long toDate, String keyword, int limit) throws Exception {
+        List<InfoItemBestSellerResponse> resultList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -58,10 +58,10 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
             statement.setInt(3, limit);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                StoreHouseInfoItemResponse result = new StoreHouseInfoItemResponse();
+                InfoItemBestSellerResponse result = new InfoItemBestSellerResponse();
                 result.setName(resultSet.getString("name"));
                 result.setBrand(resultSet.getString("brand"));
-                result.setNumbers(resultSet.getInt("numbers") + "");
+                result.setNumbers(resultSet.getInt("numbers"));
                 resultList.add(result);
             }
         } catch (Exception e) {

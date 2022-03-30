@@ -51,7 +51,7 @@ public class StoreHouseController extends BaseController {
     }
 
     //    Các mặt hàng bán chạy nhất (DESC) hoặc kém nhất(ASC) trong tháng
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/best_seller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findItemBestSeller(
             @RequestParam("from_date") String fromDate,
             @RequestParam("to_date") String toDate,
