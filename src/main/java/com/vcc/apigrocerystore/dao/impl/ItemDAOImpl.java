@@ -28,7 +28,7 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
-            eLogger.error("Error insert item: {}", e.getMessage());
+            eLogger.error("Error ItemDAO.insert item: {}", e.getMessage());
             if (connection != null) {
                 connection.rollback();
             }

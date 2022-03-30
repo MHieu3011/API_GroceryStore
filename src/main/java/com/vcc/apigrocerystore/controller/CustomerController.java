@@ -22,6 +22,7 @@ public class CustomerController extends BaseController {
     @Autowired
     private CustomerService customerService;
 
+    //Thêm mới khách hàng
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("full_name") String fullName,

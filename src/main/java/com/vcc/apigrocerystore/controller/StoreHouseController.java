@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +19,7 @@ public class StoreHouseController extends BaseController {
     @Autowired
     private StoreHouseService storeHouseService;
 
+    //Thêm mới lô hàng vào kho
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("id_item") long idItem,
@@ -51,4 +49,35 @@ public class StoreHouseController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
+    //    Các mặt hàng bán chạy nhất (DESC) hoặc kém nhất(ASC) trong tháng
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findItemBestSeller(
+            @RequestParam("from_date") String fromDate,
+            @RequestParam("to_date") String toDate,
+            @RequestParam(value = "keyword", required = false, defaultValue = "DESC") String keyword,
+            @RequestParam(value = "limit", required = false, defaultValue = "1") int limit,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setFromDate(fromDate);
+            form.setToDate(toDate);
+            form.setKeyword(keyword);
+            form.setLimit(limit);
+            serverResponse = storeHouseService.findItemBestSeller(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish StoreHouseController.findItemBestSeller: {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("StoreHouseController.findItemBestSeller error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
 }

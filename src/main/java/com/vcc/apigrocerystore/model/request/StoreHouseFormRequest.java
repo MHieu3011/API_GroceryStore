@@ -6,6 +6,10 @@ public class StoreHouseFormRequest extends BaseFormRequest {
     private String codeItem;
     private int number;
     private String date;
+    private String fromDate;
+    private String toDate;
+    private String keyword;
+    private int limit;
 
     public StoreHouseFormRequest() {
     }
@@ -40,5 +44,37 @@ public class StoreHouseFormRequest extends BaseFormRequest {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 }

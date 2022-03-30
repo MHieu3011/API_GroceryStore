@@ -21,6 +21,7 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
+    //Thêm mới nhân viên
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("username") String userName,

@@ -30,7 +30,7 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
             if (connection != null) {
                 connection.rollback();
             }
-            eLogger.error("Error insert bill: {}", e.getMessage());
+            eLogger.error("Error BillDAO.insert bill: {}", e.getMessage());
         } finally {
             releaseConnectAndStatement(connection, statement);
         }

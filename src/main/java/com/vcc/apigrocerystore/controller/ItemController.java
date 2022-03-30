@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +19,7 @@ public class ItemController extends BaseController {
     @Autowired
     private ItemService itemService;
 
+    //Thêm mới thông tin mặt hàng
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("code") String code,
@@ -56,5 +54,4 @@ public class ItemController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
-
 }

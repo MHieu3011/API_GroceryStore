@@ -6,4 +6,6 @@ import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
 public interface StoreHouseService {
 
     Response create(StoreHouseFormRequest form) throws Exception;
+
+    Response findItemBestSeller(StoreHouseFormRequest form) throws Exception;
 }

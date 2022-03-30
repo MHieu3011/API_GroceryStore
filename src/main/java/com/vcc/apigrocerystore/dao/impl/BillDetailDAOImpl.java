@@ -2,7 +2,9 @@ package com.vcc.apigrocerystore.dao.impl;
 
 import com.vcc.apigrocerystore.dao.BillDetailDAO;
 import com.vcc.apigrocerystore.entities.BillDetailEntity;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
+import com.vcc.apigrocerystore.global.ErrorCode;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -33,13 +35,13 @@ public class BillDetailDAOImpl extends AbstractDAO implements BillDetailDAO {
                 statement.executeUpdate();
                 connection.commit();
             } else {
-                eLogger.error("Error insert billDetail: There are no more items with id = {} in store house", entity.getIdItem());
+                throw new CommonException(ErrorCode.NO_MORE_ITEM_IN_STORE_HOUSE, "No more items in store house");
             }
         } catch (Exception e) {
             if (connection != null) {
                 connection.rollback();
             }
-            eLogger.error("Error insert billDetail: {}", e.getMessage());
+            eLogger.error("Error BillDetailDAO.insert billDetail: {}", e.getMessage());
         } finally {
             releaseConnectAndStatement(connection, statement);
         }

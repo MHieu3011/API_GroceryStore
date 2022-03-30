@@ -59,4 +59,5 @@ public class ItemFormRequest extends BaseFormRequest {
     public void setBrand(String brand) {
         this.brand = brand;
     }
+
 }

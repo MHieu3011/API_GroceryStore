@@ -16,5 +16,8 @@ public class ErrorCode {
     public static final int NUMBER_MUST_SMALLER_0 = 610;
     public static final int PHONE_NUMBER_MUST_NOT_EMPTY = 611;
     public static final int PHONE_NUMBER_MUST_NUMBER = 612;
+    public static final int NO_MORE_ITEM_IN_STORE_HOUSE = 613;
+    public static final int KEYWORD_MUST_NOT_EMPTY = 614;
+    public static final int KEYWORD_INVALID = 615;
 
 }

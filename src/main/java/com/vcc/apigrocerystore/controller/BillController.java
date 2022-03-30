@@ -22,6 +22,7 @@ public class BillController extends BaseController {
     @Autowired
     private BillService billService;
 
+    //Thêm mới hóa đơn
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("id_customer") long idCustomer,
