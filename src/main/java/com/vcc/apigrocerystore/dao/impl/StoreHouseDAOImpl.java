@@ -4,6 +4,8 @@ import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
 import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemByExpireResponse;
+import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -67,6 +69,40 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
             }
         } catch (Exception e) {
             eLogger.error("Error StoreHouseDAO.findItemBestSeller: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<InfoItemByExpireResponse> findItemByExpire(long fromDate, long toDate) throws Exception {
+        List<InfoItemByExpireResponse> resultList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            StringBuilder sql = new StringBuilder("SELECT i.name, s.number, i.fromdate, i.todate, i.brand");
+            sql.append(" FROM item i");
+            sql.append(" INNER JOIN storehouse s ON s.iditem=i.id AND s.codeitem=i.code");
+            sql.append(" WHERE i.todate BETWEEN ? AND ?");
+            sql.append(" ORDER BY i.todate;");
+            statement = connection.prepareStatement(sql.toString());
+            statement.setLong(1, fromDate);
+            statement.setLong(2, toDate);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                InfoItemByExpireResponse result = new InfoItemByExpireResponse();
+                result.setName(resultSet.getString("name"));
+                result.setNumber(resultSet.getInt("number"));
+                result.setFromDate(DateTimeUtils.formatTimeInSec(resultSet.getLong("fromdate"), DateTimeUtils.DEFAULT_DATE_FORMAT));
+                result.setToDate(DateTimeUtils.formatTimeInSec(resultSet.getLong("todate"), DateTimeUtils.DEFAULT_DATE_FORMAT));
+                result.setBrand(resultSet.getString("brand"));
+                resultList.add(result);
+            }
+        } catch (Exception e) {
+            eLogger.error("Error StoreHouseDAO.findItemByExpire: {}", e.getMessage());
         } finally {
             releaseResource(connection, statement, resultSet);
         }

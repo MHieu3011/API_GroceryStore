@@ -7,6 +7,7 @@ import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
 import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemByExpireResponse;
 import com.vcc.apigrocerystore.service.StoreHouseService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
@@ -85,6 +86,32 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
         long toDate = DateTimeUtils.getTimeInSecs(strToDate);
         List<InfoItemBestSellerResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(resultList)
+                .build();
+    }
+
+    @Override
+    public Response findItemByExpire(StoreHouseFormRequest form) throws Exception {
+        //validate dữ liệu đầu vào
+        String strFromDate = form.getFromDate();
+        String strToDate = form.getToDate();
+        if (CommonUtils.checkEmpty(strFromDate)) {
+            throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "from date must not empty");
+        }
+        if (CommonUtils.checkEmpty(strToDate)) {
+            throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "to date must not empty");
+        }
+        DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
+        DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        if (d1.compareTo(d2) > 0) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
+        }
+
+        long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
+        long toDate = DateTimeUtils.getTimeInSecs(strToDate);
+        List<InfoItemByExpireResponse> resultList = storeHouseDAO.findItemByExpire(fromDate, toDate);
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)

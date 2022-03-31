@@ -8,4 +8,6 @@ public interface StoreHouseService {
     Response create(StoreHouseFormRequest form) throws Exception;
 
     Response findItemBestSeller(StoreHouseFormRequest form) throws Exception;
+
+    Response findItemByExpire(StoreHouseFormRequest form) throws Exception;
 }

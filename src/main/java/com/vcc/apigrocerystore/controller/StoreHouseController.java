@@ -80,4 +80,29 @@ public class StoreHouseController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
+    //Các mặt hàng có hạn sử dụng
+    @GetMapping(value = "/expire", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findItemByExpire(
+            @RequestParam("from_date") String fromDate,
+            @RequestParam("to_date") String toDate,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setFromDate(fromDate);
+            form.setToDate(toDate);
+            serverResponse = storeHouseService.findItemByExpire(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish StoreHouseController.findItemByExpire: {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("StoreHouseController.findItemByExpire error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
 }
