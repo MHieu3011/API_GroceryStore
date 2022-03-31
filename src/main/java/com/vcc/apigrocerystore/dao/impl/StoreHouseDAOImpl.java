@@ -48,8 +48,9 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             StringBuilder sql = new StringBuilder("SELECT i.name AS name, i.brand AS brand, sum(s.number) AS numbers");
-            sql.append(" FROM storehouse s, item i");
-            sql.append(" WHERE s.codeitem = i.code AND s.iditem = i.id AND date BETWEEN ? AND ?");
+            sql.append(" FROM storehouse s");
+            sql.append(" INNER JOIN item i ON s.iditem = i.id AND s.codeitem = i.code");
+            sql.append(" WHERE date BETWEEN ? AND ?");
             sql.append(" GROUP BY s.codeitem");
             sql.append(" ORDER BY numbers " + keyword + " LIMIT ?");
             statement = connection.prepareStatement(sql.toString());
