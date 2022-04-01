@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserRegistrationForm {
+public class UserRegistrationFormRequest {
     @Expose
     @SerializedName("username")
     @JsonProperty("username")

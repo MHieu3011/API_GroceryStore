@@ -6,7 +6,7 @@ import com.vcc.apigrocerystore.entities.UserEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
-import com.vcc.apigrocerystore.model.request.UserRegistrationForm;
+import com.vcc.apigrocerystore.model.request.UserRegistrationFormRequest;
 import com.vcc.apigrocerystore.service.UserService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
     private UserDAO userDAO;
 
     @Override
-    public Response createByRequestBody(UserRegistrationForm form) throws Exception {
+    public Response createByRequestBody(UserRegistrationFormRequest form) throws Exception {
         //validate dữ liệu đầu vào
         String userName = form.getUserName();
         String fullName = form.getFullName();

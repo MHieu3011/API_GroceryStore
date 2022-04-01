@@ -5,7 +5,7 @@ public class CommonUtils {
     private CommonUtils() {
     }
 
-    public static boolean checkEmpty(String str) {
-        return str == null || str.isEmpty();
+    public synchronized static boolean checkEmpty(String str) {
+        return str == null || str.isEmpty() || str.equals("null");
     }
 }

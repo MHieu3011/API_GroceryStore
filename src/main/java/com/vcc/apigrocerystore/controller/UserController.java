@@ -3,7 +3,7 @@ package com.vcc.apigrocerystore.controller;
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
-import com.vcc.apigrocerystore.model.request.UserRegistrationForm;
+import com.vcc.apigrocerystore.model.request.UserRegistrationFormRequest;
 import com.vcc.apigrocerystore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
-    //Thêm mới nhân viên
+    //Thêm mới nhân viên bằng các param
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("username") String userName,
@@ -53,9 +53,10 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
+    //Thêm mới nhân viên bằng các body
     @PostMapping(value = "/body", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> createByRequestBody(
-            @RequestBody @Valid UserRegistrationForm userRegistrationForm,
+            @RequestBody @Valid UserRegistrationFormRequest userRegistrationFormRequest,
             HttpServletRequest request
     ) {
         StopWatch stopWatch = new StopWatch();
@@ -64,7 +65,7 @@ public class UserController extends BaseController {
         Response serverResponse;
 
         try {
-            serverResponse = userService.createByRequestBody(userRegistrationForm);
+            serverResponse = userService.createByRequestBody(userRegistrationFormRequest);
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.create {} in {}", requestUri, stopWatch.stop());
