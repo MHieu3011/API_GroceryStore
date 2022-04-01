@@ -80,7 +80,7 @@ public class StoreHouseController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //Các mặt hàng có hạn sử dụng
+    //Các mặt hàng có hạn sử dụng trong khoảng thời gian và còn hàng trong kho
     @GetMapping(value = "/expire", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findItemByExpire(
             @RequestParam("from_date") String fromDate,
@@ -101,6 +101,30 @@ public class StoreHouseController extends BaseController {
             requestLogger.info("Finish StoreHouseController.findItemByExpire: {} in {}", requestUri, stopWatch.stop());
         } catch (Exception e) {
             eLogger.error("StoreHouseController.findItemByExpire error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
+    //    Các mặt hàng có trong kho, đc sắp xếp theo hạn sử dụng để cửa hàng bày bán trước
+    @GetMapping(value = "/expire/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findItemByExpire(
+            @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setLimit(limit);
+            serverResponse = storeHouseService.findItemByExpireInputNoDate(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish StoreHouseController.findItemByExpire Input no date: {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("StoreHouseController.findItemByExpire Input no date error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);

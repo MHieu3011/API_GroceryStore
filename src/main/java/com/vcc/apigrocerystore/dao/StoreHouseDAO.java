@@ -12,4 +12,6 @@ public interface StoreHouseDAO {
     List<InfoItemBestSellerResponse> findItemBestSeller(long fromDate, long toDate, String keyword, int limit) throws Exception;
 
     List<InfoItemByExpireResponse> findItemByExpire(long fromDate, long toDate) throws Exception;
+
+    List<InfoItemByExpireResponse> findItemByExpire(int limit) throws Exception;
 }

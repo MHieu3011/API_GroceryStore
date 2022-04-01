@@ -6,6 +6,9 @@ public class BillFormRequest extends BaseFormRequest {
     private long idUser;
     private String date;
     private long totalMoney;
+    private String fromDate;
+    private String toDate;
+    private String brand;
 
     public BillFormRequest() {
     }
@@ -40,5 +43,29 @@ public class BillFormRequest extends BaseFormRequest {
 
     public void setTotalMoney(long totalMoney) {
         this.totalMoney = totalMoney;
+    }
+
+    public String getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(String fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public String getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(String toDate) {
+        this.toDate = toDate;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 }

@@ -6,6 +6,7 @@ import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.BillDetailRegistrationFormRequest;
+import com.vcc.apigrocerystore.model.response.InfoTotalRevenueByBrand;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -105,5 +106,36 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
         } finally {
             releaseResource(connection, statement, resultSet);
         }
+    }
+
+    @Override
+    public InfoTotalRevenueByBrand getTotalRevenueByBrand(long fromDate, long toDate, String brand) throws Exception {
+        InfoTotalRevenueByBrand result = new InfoTotalRevenueByBrand();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            StringBuilder sql = new StringBuilder("SELECT i.brand, sum((bd.number*i.price)) totalrevenue");
+            sql.append(" FROM billdetail bd");
+            sql.append(" INNER JOIN bill b ON bd.idbill = b.id");
+            sql.append(" INNER JOIN item i ON bd.iditem = i.id");
+            sql.append(" WHERE b.date BETWEEN ? AND ? AND i.brand = ?");
+            sql.append(" GROUP BY i.brand");
+            statement = connection.prepareStatement(sql.toString());
+            statement.setLong(1, fromDate);
+            statement.setLong(2, toDate);
+            statement.setString(3, brand);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result.setBrand(resultSet.getString("brand"));
+                result.setTotalRevenue(resultSet.getLong("totalrevenue"));
+            }
+        } catch (Exception e) {
+            eLogger.error("Error BillDAO.getTotalRevenueByBrand bill: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return result;
     }
 }

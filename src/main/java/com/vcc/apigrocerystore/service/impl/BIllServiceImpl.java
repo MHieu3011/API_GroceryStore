@@ -8,9 +8,12 @@ import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.BillDetailRegistrationFormRequest;
 import com.vcc.apigrocerystore.model.request.BillFormRequest;
 import com.vcc.apigrocerystore.model.request.BillRegistrationFormRequest;
+import com.vcc.apigrocerystore.model.response.InfoTotalRevenueByBrand;
 import com.vcc.apigrocerystore.service.BillService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -78,6 +81,37 @@ public class BIllServiceImpl extends AbstractService implements BillService {
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildMessage("Create bill successfully")
+                .build();
+    }
+
+    @Override
+    public Response getTotalRevenueByBrand(BillFormRequest form) throws Exception {
+        //validate dữ liệu đầu vào
+        String strFromDate = form.getFromDate();
+        String strToDate = form.getToDate();
+        String brand = form.getBrand();
+        if (CommonUtils.checkEmpty(strFromDate)) {
+            throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "date must not empty");
+        }
+        if (CommonUtils.checkEmpty(strToDate)) {
+            throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "date must not empty");
+        }
+        if (CommonUtils.checkEmpty(brand)) {
+            throw new CommonException(ErrorCode.ITEM_BRAND_MUST_NOT_EMPTY, "brand must not empty");
+        }
+        DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
+        DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        if (d1.compareTo(d2) > 0){
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
+        }
+
+        long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
+        long toDate = DateTimeUtils.getTimeInSecs(strToDate);
+        InfoTotalRevenueByBrand result = billDAO.getTotalRevenueByBrand(fromDate, toDate, brand);
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildMessage("message from server")
+                .buildData(result)
                 .build();
     }
 }

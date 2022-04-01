@@ -117,4 +117,19 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
                 .buildData(resultList)
                 .build();
     }
+
+    @Override
+    public Response findItemByExpireInputNoDate(StoreHouseFormRequest form) throws Exception {
+        //validate dữ liệu đầu vào
+        int limit = form.getLimit();
+        if (limit < 0) {
+            throw new CommonException(ErrorCode.NUMBER_MUST_SMALLER_0, "limit must smaller 0");
+        }
+
+        List<InfoItemByExpireResponse> resultList = storeHouseDAO.findItemByExpire(limit);
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(resultList)
+                .build();
+    }
 }

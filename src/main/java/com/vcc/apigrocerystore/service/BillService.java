@@ -9,4 +9,6 @@ public interface BillService {
     Response createByParam(BillFormRequest form) throws Exception;
 
     Response create(BillRegistrationFormRequest form) throws Exception;
+
+    Response getTotalRevenueByBrand(BillFormRequest form) throws Exception;
 }

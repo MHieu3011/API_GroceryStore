@@ -10,4 +10,6 @@ public interface StoreHouseService {
     Response findItemBestSeller(StoreHouseFormRequest form) throws Exception;
 
     Response findItemByExpire(StoreHouseFormRequest form) throws Exception;
+
+    Response findItemByExpireInputNoDate(StoreHouseFormRequest form) throws Exception;
 }

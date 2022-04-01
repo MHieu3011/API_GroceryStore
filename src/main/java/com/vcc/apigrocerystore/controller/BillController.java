@@ -74,4 +74,32 @@ public class BillController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
+    //    Tổng doanh thu của nhãn hiệu (brand) từ ngày đến ngày
+    @GetMapping(value = "/total_revenue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getTotalRevenueByBrand(
+            @RequestParam("from_date") String fromDate,
+            @RequestParam("to_date") String toDate,
+            @RequestParam("brand") String brand,
+            HttpServletRequest request
+    ){
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            BillFormRequest form = new BillFormRequest();
+            form.setFromDate(fromDate);
+            form.setToDate(toDate);
+            form.setBrand(brand);
+            serverResponse = billService.getTotalRevenueByBrand(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish BillController.getTotalRevenueByBrand: {} in {}", requestUri, stopWatch.stop());
+        }catch (Exception e) {
+            eLogger.error("BillController.getTotalRevenueByBrand error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
 }

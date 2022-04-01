@@ -8,22 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/bill_detail")
 public class BillDetailController extends BaseController {
 
     @Autowired
     private BillDetailService billDetailService;
 
     //Thêm mới chi tiết hóa đơn
-    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping( value = "/bill_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("id_bill") long idBill,
             @RequestParam("id_item") long idItem,
@@ -50,4 +46,5 @@ public class BillDetailController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
 }
