@@ -65,7 +65,9 @@ public class ItemController extends BaseController {
         Response serverResponse;
         try {
 
-            serverResponse = itemService.findAll();
+            ItemFormRequest form = new ItemFormRequest();
+            form.setRequestUri(requestUri);
+            serverResponse = itemService.findAll(form);
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish ItemController.findAll {} in {}", requestUri, stopWatch.stop());
         } catch (Exception e) {

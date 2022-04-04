@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class BillRegistrationFormRequest {
+public class BillRegistrationFormRequest extends BaseFormRequest{
 
     @Expose
     @SerializedName("id_customer")

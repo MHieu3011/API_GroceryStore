@@ -7,5 +7,5 @@ public interface ItemService {
 
     Response create(ItemFormRequest form) throws Exception;
 
-    Response findAll() throws Exception;
+    Response findAll(ItemFormRequest form) throws Exception;
 }

@@ -1,6 +1,7 @@
 package com.vcc.apigrocerystore.service.impl;
 
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.cache.local.ResponseLocalCache;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
@@ -14,6 +15,7 @@ import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
 
     @Autowired
     private StoreHouseDAO storeHouseDAO;
+
+    @Autowired
+    @Qualifier("responseLocalCache")
+    private ResponseLocalCache responseLocalCache;
 
     @Override
     public Response create(StoreHouseFormRequest form) throws Exception {
@@ -83,9 +89,17 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
 
-        long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
-        long toDate = DateTimeUtils.getTimeInSecs(strToDate);
-        List<InfoItemBestSellerResponse> resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
+//        gọi cache lấy dữ liệu, nếu có thì trả về cho client
+        String key = form.getRequestUri();
+        List<InfoItemBestSellerResponse> resultList = (List<InfoItemBestSellerResponse>) responseLocalCache.get(key);
+        if (resultList == null) {
+//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
+            long toDate = DateTimeUtils.getTimeInSecs(strToDate);
+            resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
+
+            responseLocalCache.put(key, resultList);
+        }
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)
@@ -109,9 +123,17 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
 
-        long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
-        long toDate = DateTimeUtils.getTimeInSecs(strToDate);
-        List<InfoItemByExpireResponse> resultList = storeHouseDAO.findItemByExpire(fromDate, toDate);
+//        gọi cache lấy dữ liệu, nếu có thì trả về cho client
+        String key = form.getRequestUri();
+        List<InfoItemByExpireResponse> resultList = (List<InfoItemByExpireResponse>) responseLocalCache.get(key);
+        if (resultList == null) {
+//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
+            long toDate = DateTimeUtils.getTimeInSecs(strToDate);
+            resultList = storeHouseDAO.findItemByExpire(fromDate, toDate);
+
+            responseLocalCache.put(key, resultList);
+        }
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)
@@ -126,7 +148,16 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             throw new CommonException(ErrorCode.NUMBER_MUST_SMALLER_0, "limit must smaller 0");
         }
 
-        List<InfoItemByExpireResponse> resultList = storeHouseDAO.findItemByExpire(limit);
+
+//        gọi cache để lấy dữ liệu, nếu cache có thì trả về cho client
+        String key = form.getRequestUri();
+        List<InfoItemByExpireResponse> resultList = (List<InfoItemByExpireResponse>) responseLocalCache.get(key);
+        if (resultList == null) {
+//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            resultList = storeHouseDAO.findItemByExpire(limit);
+
+            responseLocalCache.put(key, resultList);
+        }
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildData(resultList)

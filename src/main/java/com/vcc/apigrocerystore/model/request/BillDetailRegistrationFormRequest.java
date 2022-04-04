@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BillDetailRegistrationFormRequest {
+public class BillDetailRegistrationFormRequest extends BaseFormRequest{
 
     @Expose
     @SerializedName("id_item")

@@ -65,6 +65,7 @@ public class StoreHouseController extends BaseController {
         Response serverResponse;
         try {
             StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setRequestUri(requestUri);
             form.setFromDate(fromDate);
             form.setToDate(toDate);
             form.setKeyword(keyword);
@@ -93,6 +94,7 @@ public class StoreHouseController extends BaseController {
         Response serverResponse;
         try {
             StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setRequestUri(requestUri);
             form.setFromDate(fromDate);
             form.setToDate(toDate);
             serverResponse = storeHouseService.findItemByExpire(form);
@@ -118,6 +120,7 @@ public class StoreHouseController extends BaseController {
         Response serverResponse;
         try {
             StoreHouseFormRequest form = new StoreHouseFormRequest();
+            form.setRequestUri(requestUri);
             form.setLimit(limit);
             serverResponse = storeHouseService.findItemByExpireInputNoDate(form);
 

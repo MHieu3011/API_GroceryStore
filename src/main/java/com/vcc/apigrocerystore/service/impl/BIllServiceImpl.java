@@ -1,6 +1,7 @@
 package com.vcc.apigrocerystore.service.impl;
 
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.cache.local.ResponseLocalCache;
 import com.vcc.apigrocerystore.dao.BillDAO;
 import com.vcc.apigrocerystore.entities.BillEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
@@ -15,6 +16,7 @@ import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,10 @@ public class BIllServiceImpl extends AbstractService implements BillService {
 
     @Autowired
     private BillDAO billDAO;
+
+    @Autowired
+    @Qualifier("responseLocalCache")
+    private ResponseLocalCache responseLocalCache;
 
     @Override
     public Response createByParam(BillFormRequest form) throws Exception {
@@ -101,13 +107,23 @@ public class BIllServiceImpl extends AbstractService implements BillService {
         }
         DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
         DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
-        if (d1.compareTo(d2) > 0){
+        if (d1.compareTo(d2) > 0) {
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
 
-        long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
-        long toDate = DateTimeUtils.getTimeInSecs(strToDate);
-        InfoTotalRevenueByBrand result = billDAO.getTotalRevenueByBrand(fromDate, toDate, brand);
+
+        //gọi cache, nếu cache có trả về client
+        String key = form.getRequestUri();
+        InfoTotalRevenueByBrand result = (InfoTotalRevenueByBrand) responseLocalCache.get(key);
+        if (result == null) {
+            //nếu cache không có thì lấy từ DAO và put cache
+            long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
+            long toDate = DateTimeUtils.getTimeInSecs(strToDate);
+            result = billDAO.getTotalRevenueByBrand(fromDate, toDate, brand);
+
+            responseLocalCache.put(key, result);
+        }
+
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildMessage("message from server")

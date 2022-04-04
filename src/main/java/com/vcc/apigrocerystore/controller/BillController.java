@@ -89,6 +89,7 @@ public class BillController extends BaseController {
         Response serverResponse;
         try {
             BillFormRequest form = new BillFormRequest();
+            form.setRequestUri(requestUri);
             form.setFromDate(fromDate);
             form.setToDate(toDate);
             form.setBrand(brand);

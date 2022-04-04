@@ -65,6 +65,7 @@ public class UserController extends BaseController {
         Response serverResponse;
 
         try {
+            userRegistrationFormRequest.setRequestUri(requestUri);
             serverResponse = userService.createByRequestBody(userRegistrationFormRequest);
 
             strResponse = gson.toJson(serverResponse, Response.class);
@@ -74,6 +75,19 @@ public class UserController extends BaseController {
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
+    //Login
+    @GetMapping(value = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> login(
+            @RequestParam("user_name") String userName,
+            @RequestParam("password") String password,
+            HttpServletRequest request
+    ){
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+
+        return null;
     }
 
 }
