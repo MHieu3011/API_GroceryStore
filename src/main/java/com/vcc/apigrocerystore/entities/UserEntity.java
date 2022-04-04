@@ -7,16 +7,9 @@ public class UserEntity extends BaseEntity {
     private String password;
     private String address;
     private int role;
+    private int status;
 
     public UserEntity() {
-    }
-
-    public UserEntity(String userName, String fullName, String password, String address, int role) {
-        this.userName = userName;
-        this.fullName = fullName;
-        this.password = password;
-        this.address = address;
-        this.role = role;
     }
 
     public String getUserName() {
@@ -57,5 +50,13 @@ public class UserEntity extends BaseEntity {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

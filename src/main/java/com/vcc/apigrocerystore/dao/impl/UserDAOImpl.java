@@ -17,7 +17,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO user(username, fullname, password, role, address) VALUES(?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO user(username, fullname, password, role, address, status) VALUES(?, ?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(sql);
             statement.setQueryTimeout(1);
             statement.setString(1, entity.getUserName());
@@ -25,6 +25,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             statement.setString(3, entity.getPassword());
             statement.setInt(4, entity.getRole());
             statement.setString(5, entity.getAddress());
+            statement.setInt(6, entity.getStatus());
             statement.executeUpdate();
             connection.commit();
         } catch (Exception e) {
