@@ -9,4 +9,5 @@ public interface UserService {
 
     Response createByRequestBody(UserRegistrationFormRequest form) throws Exception;
 
+    Response login(UserFormRequest form) throws Exception;
 }

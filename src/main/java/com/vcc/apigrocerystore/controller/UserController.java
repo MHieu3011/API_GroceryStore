@@ -83,11 +83,25 @@ public class UserController extends BaseController {
             @RequestParam("user_name") String userName,
             @RequestParam("password") String password,
             HttpServletRequest request
-    ){
+    ) {
         StopWatch stopWatch = new StopWatch();
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setRequestUri(requestUri);
+            form.setUserName(userName);
+            form.setPassword(password);
+            serverResponse = userService.login(form);
 
-        return null;
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.login {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("UserController.login error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
 }

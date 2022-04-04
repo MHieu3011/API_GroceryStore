@@ -79,4 +79,9 @@ public class UserServiceImpl extends AbstractService implements UserService {
                 .buildMessage("Create User successfully")
                 .build();
     }
+
+    @Override
+    public Response login(UserFormRequest form) throws Exception {
+        return null;
+    }
 }
