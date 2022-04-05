@@ -22,6 +22,7 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
     public Response create(CustomerFormRequest form) throws Exception {
         //validate dữ liệu đầu vào
         String fullName = form.getFullName();
+        int sex = form.getSex();
         String phoneNumber = form.getPhoneNumber();
         if (CommonUtils.checkEmpty(fullName)) {
             throw new CommonException(ErrorCode.FULL_NAME_MUST_NOT_EMPTY, "full name must not empty");
@@ -32,9 +33,13 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
         if (phoneNumber.matches("[0-9]")) {
             throw new CommonException(ErrorCode.PHONE_NUMBER_MUST_NUMBER, "phone number must number");
         }
+        if (sex != 0 && sex != 1) {
+            throw new CommonException(ErrorCode.SEX_INVALID, "sex invalid");
+        }
 
         CustomerEntity entity = new CustomerEntity();
         entity.setFullName(fullName);
+        entity.setSex(sex);
         entity.setPhoneNumber(phoneNumber);
         customerDAO.create(entity);
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserRegistrationFormRequest extends BaseFormRequest{
+public class UserRegistrationFormRequest extends BaseFormRequest {
     @Expose
     @SerializedName("username")
     @JsonProperty("username")
@@ -14,6 +14,11 @@ public class UserRegistrationFormRequest extends BaseFormRequest{
     @SerializedName("full_name")
     @JsonProperty("full_name")
     private String fullName;
+
+    @Expose
+    @SerializedName("sex")
+    @JsonProperty("sex")
+    private int sex;
 
     @Expose
     @SerializedName("password")
@@ -55,5 +60,13 @@ public class UserRegistrationFormRequest extends BaseFormRequest{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 }

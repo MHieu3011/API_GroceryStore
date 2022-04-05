@@ -20,5 +20,6 @@ public class ErrorCode {
     public static final int KEYWORD_MUST_NOT_EMPTY = 614;
     public static final int ID_INVALID = 615;
     public static final int BILL_DETAIL_FORM_REQUEST_NOT_EMPTY = 616;
+    public static final int SEX_INVALID = 617;
 
 }

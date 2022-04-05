@@ -4,6 +4,7 @@ public class UserEntity extends BaseEntity {
 
     private String userName;
     private String fullName;
+    private int sex;
     private String password;
     private String address;
     private int role;
@@ -26,6 +27,14 @@ public class UserEntity extends BaseEntity {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 
     public String getPassword() {

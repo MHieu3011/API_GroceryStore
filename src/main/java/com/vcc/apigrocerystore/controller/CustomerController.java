@@ -26,6 +26,7 @@ public class CustomerController extends BaseController {
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("full_name") String fullName,
+            @RequestParam("sex") int sex,
             @RequestParam("phone_number") String phoneNumber,
             HttpServletRequest request
     ) {
@@ -37,6 +38,7 @@ public class CustomerController extends BaseController {
             CustomerFormRequest form = new CustomerFormRequest();
             form.setRequestUri(requestUri);
             form.setFullName(fullName);
+            form.setSex(sex);
             form.setPhoneNumber(phoneNumber);
 
             serverResponse = customerService.create(form);

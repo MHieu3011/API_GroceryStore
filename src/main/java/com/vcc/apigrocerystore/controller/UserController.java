@@ -26,6 +26,7 @@ public class UserController extends BaseController {
     public ResponseEntity<String> create(
             @RequestParam("username") String userName,
             @RequestParam("full_name") String fullName,
+            @RequestParam("sex") int sex,
             @RequestParam("password") String password,
             @RequestParam("address") String address,
             HttpServletRequest request
@@ -40,6 +41,7 @@ public class UserController extends BaseController {
             form.setRequestUri(requestUri);
             form.setUserName(userName);
             form.setFullName(fullName);
+            form.setSex(sex);
             form.setPassword(password);
             form.setAddress(address);
             serverResponse = userService.create(form);

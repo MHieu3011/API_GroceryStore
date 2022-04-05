@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ResponseLocalCache implements ICache<String, Object> {
 
-    private static final Logger eLogger = LogManager.getLogger("ErrorLog");
+    private static final Logger eLogger = LogManager.getLogger("CacheError");
     private static final Logger cLogger = LogManager.getLogger("CacheLog");
 
     private static final int LOCAL_CACHE_MAX_SIZE = ConfigInfo.RESPONSE_CACHE_INFO_SIZE;
