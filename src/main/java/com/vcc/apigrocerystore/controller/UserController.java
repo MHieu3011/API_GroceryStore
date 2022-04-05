@@ -106,4 +106,27 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
+    //    Cho thôi việc nhân viên
+    @DeleteMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> delete(
+            @RequestParam("user_name") String userName,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setUserName(userName);
+            serverResponse = userService.delete(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.delete {} in {}", requestUri, stopWatch.stop());
+        } catch (Exception e) {
+            eLogger.error("UserController.delete error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
 }

@@ -7,4 +7,6 @@ public interface UserDAO {
     InfoUserResponse create(UserEntity entity) throws Exception;
 
     InfoUserResponse login(String username, String password, int status) throws Exception;
+
+    void delete(String username) throws Exception;
 }

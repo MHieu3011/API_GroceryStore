@@ -143,4 +143,19 @@ public class UserServiceImpl extends AbstractService implements UserService {
                     .build();
         }
     }
+
+    @Override
+    public Response delete(UserFormRequest form) throws Exception {
+        //validate dữ liệu đầu vào
+        String username = form.getUserName();
+        if (CommonUtils.checkEmpty(username)) {
+            throw new CommonException(ErrorCode.USER_NAME_MUST_NOT_EMPTY, "username must not empty");
+        }
+
+        userDAO.delete(username);
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildMessage("Delete user successfully")
+                .build();
+    }
 }

@@ -75,4 +75,26 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         }
         return result;
     }
+
+    @Override
+    public void delete(String username) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            connection.setAutoCommit(false);
+            String sql = "UPDATE user u SET u.status = 0 WHERE u.username = ? AND u.id != 1";
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (Exception e) {
+            if (connection != null) {
+                connection.rollback();
+            }
+            eLogger.error("Error UserDAO.delete: {}", e.getMessage());
+        } finally {
+            releaseConnectAndStatement(connection, statement);
+        }
+    }
 }
