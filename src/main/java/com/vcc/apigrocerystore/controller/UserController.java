@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
 import com.vcc.apigrocerystore.model.request.UserRegistrationFormRequest;
 import com.vcc.apigrocerystore.service.UserService;
@@ -48,6 +49,9 @@ public class UserController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.create {}", requestUri);
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("UserController.create error: {} in {}", e.getMessage(), stopWatch.stop());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -72,6 +76,9 @@ public class UserController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.create {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("UserController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -99,6 +106,9 @@ public class UserController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.login {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("UserController.login error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -106,7 +116,7 @@ public class UserController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //    Cho thôi việc nhân viên
+    //Cho thôi việc nhân viên
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> delete(
             @RequestParam("user_name") String userName,
@@ -123,6 +133,9 @@ public class UserController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish UserController.delete {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("UserController.delete error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

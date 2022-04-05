@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component("BillRegistrationFormCreateRule")
+@Component("billRegistrationFormCreateRule")
 public class BillRegistrationFormCreateRule extends AbstractRule<BillRegistrationFormRequest> implements BaseRule<BillRegistrationFormRequest> {
     @Override
     public void verify(BillRegistrationFormRequest form) throws Exception {

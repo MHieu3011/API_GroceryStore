@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.CustomerFormRequest;
 import com.vcc.apigrocerystore.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class CustomerController extends BaseController {
             serverResponse = customerService.create(form);
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish CustomerController.create {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("CustomerController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
 import com.vcc.apigrocerystore.service.StoreHouseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class StoreHouseController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish StoreHouseController.create: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("StoreHouseController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -50,7 +54,7 @@ public class StoreHouseController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //    Các mặt hàng bán chạy nhất (DESC) hoặc kém nhất(ASC) trong tháng
+    //Các mặt hàng bán chạy nhất (DESC) hoặc kém nhất(ASC) trong tháng
     @GetMapping(value = "/best_seller", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findItemBestSeller(
             @RequestParam("from_date") String fromDate,
@@ -74,6 +78,9 @@ public class StoreHouseController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish StoreHouseController.findItemBestSeller: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("StoreHouseController.findItemBestSeller error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -101,6 +108,9 @@ public class StoreHouseController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish StoreHouseController.findItemByExpire: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("StoreHouseController.findItemByExpire error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -108,7 +118,7 @@ public class StoreHouseController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //    Các mặt hàng có trong kho, đc sắp xếp theo hạn sử dụng để cửa hàng bày bán trước
+    //Các mặt hàng có trong kho, đc sắp xếp theo hạn sử dụng để cửa hàng bày bán trước
     @GetMapping(value = "/expire/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findItemByExpire(
             @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
@@ -126,6 +136,9 @@ public class StoreHouseController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish StoreHouseController.findItemByExpire Input no date: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("StoreHouseController.findItemByExpire Input no date error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

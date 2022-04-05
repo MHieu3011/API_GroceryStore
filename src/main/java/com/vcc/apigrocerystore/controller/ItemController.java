@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.ItemFormRequest;
 import com.vcc.apigrocerystore.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class ItemController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish ItemController.create {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("ItemController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -70,6 +74,9 @@ public class ItemController extends BaseController {
             serverResponse = itemService.findAll(form);
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish ItemController.findAll {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("ItemController.findAll error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

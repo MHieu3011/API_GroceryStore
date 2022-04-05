@@ -50,7 +50,7 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             connection.setAutoCommit(false);
-//            Thêm mới 1 hóa đơn với totalMoney = 0
+            //Thêm mới 1 hóa đơn với totalMoney = 0
             String sql = "INSERT INTO bill(idcustomer, iduser, date, totalmoney) VALUES(?, ?, ?, ?)";
             statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setLong(1, idCustomer);
@@ -63,7 +63,7 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
             while (resultSet.next()) {
                 idBill = resultSet.getLong(1);
             }
-//            Thêm mới các chi tiết hóa đơn (item cùng với số lượng của nó), có kiểm tra xem còn hàng trong kho hay không
+            //Thêm mới các chi tiết hóa đơn (item cùng với số lượng của nó), có kiểm tra xem còn hàng trong kho hay không
             for (BillDetailRegistrationFormRequest billDetail : billDetails) {
                 long idItem = billDetail.getIdItem();
                 int number = billDetail.getNumber();
@@ -84,7 +84,7 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
                     throw new CommonException(ErrorCode.NO_MORE_ITEM_IN_STORE_HOUSE, "No more items in store house");
                 }
             }
-//            Cập nhật lại totalMoney cho hóa đơn
+            //Cập nhật lại totalMoney cho hóa đơn
             StringBuilder sql3 = new StringBuilder("UPDATE bill b SET b.totalmoney =");
             sql3.append(" (SELECT SUM((bd.number*i.price)) total");
             sql3.append(" FROM billdetail bd");

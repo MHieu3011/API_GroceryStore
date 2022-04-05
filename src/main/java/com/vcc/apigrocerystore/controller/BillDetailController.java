@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.BillDetailFormRequest;
 import com.vcc.apigrocerystore.service.BillDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class BillDetailController extends BaseController {
     private BillDetailService billDetailService;
 
     //Thêm mới chi tiết hóa đơn
-    @PostMapping( value = "/bill_detail",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/bill_detail", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestParam("id_bill") long idBill,
             @RequestParam("id_item") long idItem,
@@ -40,6 +41,9 @@ public class BillDetailController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish BillDetailController.create: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("BillDetail.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);

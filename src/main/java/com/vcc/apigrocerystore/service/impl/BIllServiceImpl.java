@@ -38,7 +38,7 @@ public class BIllServiceImpl extends AbstractService implements BillService {
     private BaseRule<BillFormRequest> billFormCreateRule;
 
     @Autowired
-    @Qualifier("BillRegistrationFormCreateRule")
+    @Qualifier("billRegistrationFormCreateRule")
     private BaseRule<BillRegistrationFormRequest> billRegistrationFormCreateRule;
 
     @Override

@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.controller;
 
 import com.ecyrd.speed4j.StopWatch;
 import com.vcc.apigrocerystore.builder.Response;
+import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.model.request.BillFormRequest;
 import com.vcc.apigrocerystore.model.request.BillRegistrationFormRequest;
 import com.vcc.apigrocerystore.service.BillService;
@@ -21,8 +22,9 @@ public class BillController extends BaseController {
     @Autowired
     private BillService billService;
 
-    //    Thêm mới hóa đơn sử dụng param ( cách đơn sơ lúc đầu)
-//    -> không hợp lý lắm do trường total_money đang gắn cứng
+    /*    Thêm mới hóa đơn sử dụng param ( cách đơn sơ lúc đầu)
+          -> không hợp lý lắm do trường total_money đang gắn cứng
+    */
     @PostMapping(value = "/param", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> createByParam(
             @RequestParam("id_customer") long idCustomer,
@@ -46,6 +48,9 @@ public class BillController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish BillController.create: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("BillController.createByParam error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -53,7 +58,7 @@ public class BillController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //    Thêm mới hóa đơn sử dụng body
+    //Thêm mới hóa đơn sử dụng body
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestBody @Valid BillRegistrationFormRequest billRegistrationFormRequest,
@@ -68,6 +73,9 @@ public class BillController extends BaseController {
             serverResponse = billService.create(billRegistrationFormRequest);
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish BillController.create: {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
         } catch (Exception e) {
             eLogger.error("BillController.create error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
@@ -75,14 +83,14 @@ public class BillController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //    Tổng doanh thu của nhãn hiệu (brand) từ ngày đến ngày
+    //Tổng doanh thu của nhãn hiệu (brand) từ ngày đến ngày
     @GetMapping(value = "/total_revenue", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getTotalRevenueByBrand(
             @RequestParam("from_date") String fromDate,
             @RequestParam("to_date") String toDate,
             @RequestParam("brand") String brand,
             HttpServletRequest request
-    ){
+    ) {
         StopWatch stopWatch = new StopWatch();
         String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
         String strResponse;
@@ -97,7 +105,10 @@ public class BillController extends BaseController {
 
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish BillController.getTotalRevenueByBrand: {} in {}", requestUri, stopWatch.stop());
-        }catch (Exception e) {
+        } catch (CommonException ce) {
+            eLogger.error("Controller Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
+        } catch (Exception e) {
             eLogger.error("BillController.getTotalRevenueByBrand error: {}", e.getMessage());
             strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
         }

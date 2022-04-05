@@ -89,11 +89,11 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
 
-//        gọi cache lấy dữ liệu, nếu có thì trả về cho client
+        //gọi cache lấy dữ liệu, nếu có thì trả về cho client
         String key = form.getRequestUri();
         List<InfoItemBestSellerResponse> resultList = (List<InfoItemBestSellerResponse>) responseLocalCache.get(key);
         if (resultList == null) {
-//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            //nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
             long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
             long toDate = DateTimeUtils.getTimeInSecs(strToDate);
             resultList = storeHouseDAO.findItemBestSeller(fromDate, toDate, keyword, limit);
@@ -123,11 +123,11 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
 
-//        gọi cache lấy dữ liệu, nếu có thì trả về cho client
+        //gọi cache lấy dữ liệu, nếu có thì trả về cho client
         String key = form.getRequestUri();
         List<InfoItemByExpireResponse> resultList = (List<InfoItemByExpireResponse>) responseLocalCache.get(key);
         if (resultList == null) {
-//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            //nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
             long fromDate = DateTimeUtils.getTimeInSecs(strFromDate);
             long toDate = DateTimeUtils.getTimeInSecs(strToDate);
             resultList = storeHouseDAO.findItemByExpire(fromDate, toDate);
@@ -149,11 +149,11 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         }
 
 
-//        gọi cache để lấy dữ liệu, nếu cache có thì trả về cho client
+        //gọi cache để lấy dữ liệu, nếu cache có thì trả về cho client
         String key = form.getRequestUri();
         List<InfoItemByExpireResponse> resultList = (List<InfoItemByExpireResponse>) responseLocalCache.get(key);
         if (resultList == null) {
-//            nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
+            //nếu cache không có thì gọi dao để lấy dữ liệu rồi put cache
             resultList = storeHouseDAO.findItemByExpire(limit);
 
             responseLocalCache.put(key, resultList);
