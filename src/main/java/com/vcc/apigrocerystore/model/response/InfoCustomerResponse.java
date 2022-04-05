@@ -3,11 +3,7 @@ package com.vcc.apigrocerystore.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class InfoUser {
-
-    @Expose
-    @SerializedName("username")
-    private String username;
+public class InfoCustomerResponse {
 
     @Expose
     @SerializedName("full_name")
@@ -18,16 +14,8 @@ public class InfoUser {
     private int sex;
 
     @Expose
-    @SerializedName("address")
-    private String address;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @SerializedName("phone_number")
+    private String phoneNumber;
 
     public String getFullName() {
         return fullName;
@@ -45,11 +33,11 @@ public class InfoUser {
         this.sex = sex;
     }
 
-    public String getAddress() {
-        return address;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

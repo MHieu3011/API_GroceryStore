@@ -1,8 +1,9 @@
 package com.vcc.apigrocerystore.dao;
 
 import com.vcc.apigrocerystore.entities.CustomerEntity;
+import com.vcc.apigrocerystore.model.response.InfoCustomerResponse;
 
 public interface CustomerDAO {
 
-    void create(CustomerEntity entity) throws Exception;
+    InfoCustomerResponse create(CustomerEntity entity) throws Exception;
 }

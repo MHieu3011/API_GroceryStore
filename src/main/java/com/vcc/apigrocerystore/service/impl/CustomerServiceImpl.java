@@ -6,6 +6,7 @@ import com.vcc.apigrocerystore.entities.CustomerEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.CustomerFormRequest;
+import com.vcc.apigrocerystore.model.response.InfoCustomerResponse;
 import com.vcc.apigrocerystore.service.CustomerService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,17 @@ public class CustomerServiceImpl extends AbstractService implements CustomerServ
         entity.setFullName(fullName);
         entity.setSex(sex);
         entity.setPhoneNumber(phoneNumber);
-        customerDAO.create(entity);
+        InfoCustomerResponse result = customerDAO.create(entity);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create customer successfully")
-                .build();
+        if (result.getFullName() != null) {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildData(result)
+                    .buildMessage("Create customer successfully")
+                    .build();
+        } else {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create customer error")
+                    .build();
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.UserFormRequest;
 import com.vcc.apigrocerystore.model.request.UserRegistrationFormRequest;
-import com.vcc.apigrocerystore.model.response.InfoUser;
+import com.vcc.apigrocerystore.model.response.InfoUserResponse;
 import com.vcc.apigrocerystore.service.UserService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +109,7 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
         //gọi cache, nếu cache có thì gửi dữ liệu về cho client
         String key = form.getRequestUri();
-        InfoUser result = (InfoUser) responseLocalCache.get(key);
+        InfoUserResponse result = (InfoUserResponse) responseLocalCache.get(key);
         if (result == null) {
 //            nếu cache không có dữ liệu thì gọi dao vào put cache
             result = userDAO.login(username, password, 1);

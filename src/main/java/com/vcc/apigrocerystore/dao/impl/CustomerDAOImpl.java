@@ -3,6 +3,7 @@ package com.vcc.apigrocerystore.dao.impl;
 import com.vcc.apigrocerystore.dao.CustomerDAO;
 import com.vcc.apigrocerystore.entities.CustomerEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
+import com.vcc.apigrocerystore.model.response.InfoCustomerResponse;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -11,7 +12,8 @@ import java.sql.PreparedStatement;
 @Repository
 public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
     @Override
-    public void create(CustomerEntity entity) throws Exception {
+    public InfoCustomerResponse create(CustomerEntity entity) throws Exception {
+        InfoCustomerResponse result = new InfoCustomerResponse();
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -24,6 +26,9 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
             statement.setString(3, entity.getPhoneNumber());
             statement.executeUpdate();
             connection.commit();
+            result.setFullName(entity.getFullName());
+            result.setSex(entity.getSex());
+            result.setPhoneNumber(entity.getPhoneNumber());
         } catch (Exception e) {
             if (connection != null) {
                 connection.rollback();
@@ -32,5 +37,6 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
         } finally {
             releaseConnectAndStatement(connection, statement);
         }
+        return result;
     }
 }

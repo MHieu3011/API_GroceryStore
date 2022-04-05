@@ -3,7 +3,7 @@ package com.vcc.apigrocerystore.dao.impl;
 import com.vcc.apigrocerystore.dao.UserDAO;
 import com.vcc.apigrocerystore.entities.UserEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
-import com.vcc.apigrocerystore.model.response.InfoUser;
+import com.vcc.apigrocerystore.model.response.InfoUserResponse;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -42,8 +42,8 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
     }
 
     @Override
-    public InfoUser login(String username, String password, int status) throws Exception {
-        InfoUser result = new InfoUser();
+    public InfoUserResponse login(String username, String password, int status) throws Exception {
+        InfoUserResponse result = new InfoUserResponse();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
