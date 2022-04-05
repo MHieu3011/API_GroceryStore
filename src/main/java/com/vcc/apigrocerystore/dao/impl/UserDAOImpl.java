@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 @Repository
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
     @Override
-    public void create(UserEntity entity) throws Exception {
+    public InfoUserResponse create(UserEntity entity) throws Exception {
+        InfoUserResponse result = new InfoUserResponse();
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -31,6 +32,10 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             statement.setInt(7, entity.getStatus());
             statement.executeUpdate();
             connection.commit();
+            result.setUsername(entity.getUserName());
+            result.setFullName(entity.getFullName());
+            result.setAddress(entity.getAddress());
+            result.setSex(entity.getSex());
         } catch (Exception e) {
             eLogger.error("Error UserDAO.insert user: {}", e.getMessage());
             if (connection != null) {
@@ -39,6 +44,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         } finally {
             releaseConnectAndStatement(connection, statement);
         }
+        return result;
     }
 
     @Override

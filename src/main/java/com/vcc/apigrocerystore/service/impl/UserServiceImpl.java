@@ -50,15 +50,23 @@ public class UserServiceImpl extends AbstractService implements UserService {
         UserEntity entity = new UserEntity();
         entity.setUserName(userName);
         entity.setFullName(fullName);
+        entity.setSex(sex);
         entity.setPassword(password);
         entity.setAddress(address);
         entity.setRole(0);
         entity.setStatus(1);
-        userDAO.create(entity);
+        InfoUserResponse result = userDAO.create(entity);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create User successfully")
-                .build();
+        if (result.getUsername() != null) {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildData(result)
+                    .buildMessage("Create User successfully")
+                    .build();
+        } else {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create User error")
+                    .build();
+        }
     }
 
     @Override
@@ -84,15 +92,23 @@ public class UserServiceImpl extends AbstractService implements UserService {
         UserEntity entity = new UserEntity();
         entity.setUserName(username);
         entity.setFullName(fullName);
+        entity.setSex(sex);
         entity.setPassword(password);
         entity.setAddress(form.getAddress());
         entity.setRole(0);
         entity.setStatus(1);
-        userDAO.create(entity);
+        InfoUserResponse result = userDAO.create(entity);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create User successfully")
-                .build();
+        if (result.getUsername() != null) {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildData(result)
+                    .buildMessage("Create User successfully")
+                    .build();
+        } else {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create User error")
+                    .build();
+        }
     }
 
     @Override
