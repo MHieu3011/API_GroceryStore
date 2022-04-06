@@ -6,12 +6,16 @@ import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
 import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.BillDetailRegistrationFormRequest;
+import com.vcc.apigrocerystore.model.response.InfoBillDetailResponse;
+import com.vcc.apigrocerystore.model.response.InfoBillResponse;
 import com.vcc.apigrocerystore.model.response.InfoTotalRevenueByBrand;
+import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -43,7 +47,9 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
     }
 
     @Override
-    public void create(long idCustomer, long idUser, long date, List<BillDetailRegistrationFormRequest> billDetails) throws Exception {
+    public InfoBillResponse create(long idCustomer, long idUser, long date, List<BillDetailRegistrationFormRequest> billDetails) throws Exception {
+        InfoBillResponse result = new InfoBillResponse();
+        List<InfoBillDetailResponse> billDetailList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -80,6 +86,10 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
                     statement.setLong(2, idItem);
                     statement.setInt(3, number);
                     statement.executeUpdate();
+                    InfoBillDetailResponse infoBillDetail = new InfoBillDetailResponse();
+                    infoBillDetail.setNumber(billDetail.getNumber());
+                    infoBillDetail.setIdItem(billDetail.getIdItem());
+                    billDetailList.add(infoBillDetail);
                 } else {
                     throw new CommonException(ErrorCode.NO_MORE_ITEM_IN_STORE_HOUSE, "No more items in store house");
                 }
@@ -96,7 +106,11 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
             statement.setLong(1, idBill);
             statement.setLong(2, idBill);
             statement.executeUpdate();
-
+            //Thêm hóa đơn thành công thì trả về dữ liệu hóa dơn đã thêm
+            result.setIdCustomer(idCustomer);
+            result.setIdUser(idUser);
+            result.setDate(DateTimeUtils.formatTimeInSec(date, DateTimeUtils.DEFAULT_DATE_FORMAT));
+            result.setBillDetails(billDetailList);
             connection.commit();
         } catch (Exception e) {
             if (connection != null) {
@@ -106,6 +120,7 @@ public class BillDAOImpl extends AbstractDAO implements BillDAO {
         } finally {
             releaseResource(connection, statement, resultSet);
         }
+        return result;
     }
 
     @Override

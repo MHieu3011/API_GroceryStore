@@ -9,6 +9,7 @@ import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.BillDetailRegistrationFormRequest;
 import com.vcc.apigrocerystore.model.request.BillFormRequest;
 import com.vcc.apigrocerystore.model.request.BillRegistrationFormRequest;
+import com.vcc.apigrocerystore.model.response.InfoBillResponse;
 import com.vcc.apigrocerystore.model.response.InfoTotalRevenueByBrand;
 import com.vcc.apigrocerystore.policies.BaseRule;
 import com.vcc.apigrocerystore.service.BillService;
@@ -69,11 +70,18 @@ public class BIllServiceImpl extends AbstractService implements BillService {
         String strDate = form.getDate();
         List<BillDetailRegistrationFormRequest> billDetails = form.getBillDetails();
         long date = DateTimeUtils.getTimeInSecs(strDate);
-        billDAO.create(idCustomer, idUser, date, billDetails);
+        InfoBillResponse result = billDAO.create(idCustomer, idUser, date, billDetails);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create bill successfully")
-                .build();
+        if (result.getDate() == null) {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create bill error")
+                    .build();
+        } else {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildMessage("Create bill successfully")
+                    .buildData(result)
+                    .build();
+        }
     }
 
     @Override
