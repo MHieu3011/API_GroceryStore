@@ -9,6 +9,7 @@ import com.vcc.apigrocerystore.global.ErrorCode;
 import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
 import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
 import com.vcc.apigrocerystore.model.response.InfoItemByExpireResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemInStoreHouse;
 import com.vcc.apigrocerystore.service.StoreHouseService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
@@ -47,6 +48,11 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         if (number < 0) {
             throw new CommonException(ErrorCode.NUMBER_MUST_SMALLER_0, "number must smaller 0");
         }
+        try {
+            DateTime d = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strDate);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "Date time invalid");
+        }
 
         StoreHouseEntity entity = new StoreHouseEntity();
         long date = DateTimeUtils.getTimeInSecs(strDate);
@@ -54,11 +60,18 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         entity.setCodeItem(codeItem);
         entity.setNumber(number);
         entity.setDate(date);
-        storeHouseDAO.create(entity);
+        InfoItemInStoreHouse result = storeHouseDAO.create(entity);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create store house successfully")
-                .build();
+        if (result.getDate() == null) {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create item in store house error")
+                    .build();
+        } else {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildMessage("Create item in store house successfully")
+                    .buildData(result)
+                    .build();
+        }
     }
 
     @Override

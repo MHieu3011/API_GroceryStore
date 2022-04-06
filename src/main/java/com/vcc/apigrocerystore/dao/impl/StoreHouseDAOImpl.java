@@ -5,6 +5,7 @@ import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
 import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
 import com.vcc.apigrocerystore.model.response.InfoItemByExpireResponse;
+import com.vcc.apigrocerystore.model.response.InfoItemInStoreHouse;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.springframework.stereotype.Repository;
 
@@ -17,19 +18,38 @@ import java.util.List;
 @Repository
 public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
     @Override
-    public void create(StoreHouseEntity entity) throws Exception {
+    public InfoItemInStoreHouse create(StoreHouseEntity entity) throws Exception {
+        InfoItemInStoreHouse result = new InfoItemInStoreHouse();
         Connection connection = null;
         PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO storehouse(iditem, codeitem, number, date) VALUES(?, ?, ?, ?)";
-            statement = connection.prepareStatement(sql);
+            String sql1 = "INSERT INTO storehouse(iditem, codeitem, number, date) VALUES(?, ?, ?, ?)";
+            statement = connection.prepareStatement(sql1, PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setLong(1, entity.getIdItem());
             statement.setString(2, entity.getCodeItem());
             statement.setInt(3, entity.getNumber());
             statement.setLong(4, entity.getDate());
             statement.executeUpdate();
+            long id = 0L;
+            resultSet = statement.getGeneratedKeys();
+            while (resultSet.next()) {
+                id = resultSet.getLong(1);
+            }
+            StringBuilder sql2 = new StringBuilder("SELECT i.name, s.number, s.date");
+            sql2.append(" FROM storehouse s");
+            sql2.append(" INNER JOIN item i ON s.iditem = i.id AND s.codeitem = i.code");
+            sql2.append(" WHERE s.id = ?");
+            statement = connection.prepareStatement(sql2.toString());
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result.setName(resultSet.getString("name"));
+                result.setDate(DateTimeUtils.formatTimeInSec(resultSet.getLong("date"), DateTimeUtils.DEFAULT_DATE_FORMAT));
+                result.setNumber(resultSet.getInt("number"));
+            }
             connection.commit();
         } catch (Exception e) {
             eLogger.error("Error StoreHouseDAO.insert store house: {}", e.getMessage());
@@ -37,8 +57,9 @@ public class StoreHouseDAOImpl extends AbstractDAO implements StoreHouseDAO {
                 connection.rollback();
             }
         } finally {
-            releaseConnectAndStatement(connection, statement);
+            releaseResource(connection, statement, resultSet);
         }
+        return result;
     }
 
     @Override
