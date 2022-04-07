@@ -79,11 +79,18 @@ public class ItemServiceImpl extends AbstractService implements ItemService {
         entity.setToDate(toDate);
         entity.setPrice(price);
         entity.setBrand(brand);
-        itemDAO.create(entity);
+        InfoItemResponse result = itemDAO.create(entity);
 
-        return new Response.Builder(1, HttpStatus.OK.value())
-                .buildMessage("Create item successfully")
-                .build();
+        if (result.getCode() == null) {
+            return new Response.Builder(0, HttpStatus.OK.value())
+                    .buildMessage("Create item error")
+                    .build();
+        } else {
+            return new Response.Builder(1, HttpStatus.OK.value())
+                    .buildMessage("Create item successfully")
+                    .buildData(result)
+                    .build();
+        }
     }
 
     @Override

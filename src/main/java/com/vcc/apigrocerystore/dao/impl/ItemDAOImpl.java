@@ -3,6 +3,8 @@ package com.vcc.apigrocerystore.dao.impl;
 import com.vcc.apigrocerystore.dao.ItemDAO;
 import com.vcc.apigrocerystore.entities.ItemEntity;
 import com.vcc.apigrocerystore.factory.MySQLConnectionFactory;
+import com.vcc.apigrocerystore.model.response.InfoItemResponse;
+import com.vcc.apigrocerystore.utils.DateTimeUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -14,7 +16,8 @@ import java.util.List;
 @Repository
 public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
     @Override
-    public void create(ItemEntity entity) throws Exception {
+    public InfoItemResponse create(ItemEntity entity) throws Exception {
+        InfoItemResponse result = new InfoItemResponse();
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -29,6 +32,12 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
             statement.setLong(5, entity.getPrice());
             statement.setString(6, entity.getBrand());
             statement.executeUpdate();
+            result.setCode(entity.getCode());
+            result.setName(entity.getName());
+            result.setFromDate(DateTimeUtils.formatTimeInSec(entity.getFromDate(), DateTimeUtils.DEFAULT_DATE_FORMAT));
+            result.setToDate(DateTimeUtils.formatTimeInSec(entity.getToDate(), DateTimeUtils.DEFAULT_DATE_FORMAT));
+            result.setPrice(entity.getPrice());
+            result.setBrand(entity.getBrand());
             connection.commit();
         } catch (Exception e) {
             eLogger.error("Error ItemDAO.insert item: {}", e.getMessage());
@@ -38,6 +47,7 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
         } finally {
             releaseConnectAndStatement(connection, statement);
         }
+        return result;
     }
 
     @Override
