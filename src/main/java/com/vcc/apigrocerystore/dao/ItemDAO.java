@@ -8,4 +8,6 @@ public interface ItemDAO {
     void create(ItemEntity entity) throws Exception;
 
     List<ItemEntity> findAll() throws Exception;
+
+    boolean checkItemByIdAndCode(long id, String code) throws Exception;
 }

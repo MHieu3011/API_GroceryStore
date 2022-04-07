@@ -71,4 +71,31 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
         }
         return resultList;
     }
+
+    @Override
+    public boolean checkItemByIdAndCode(long id, String code) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT name FROM item WHERE id = ? AND code = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setLong(1, id);
+            statement.setString(2, code);
+            resultSet = statement.executeQuery();
+            String name = null;
+            while (resultSet.next()) {
+                name = resultSet.getString("name");
+            }
+            if (name == null)
+                return false;
+
+        } catch (Exception e) {
+            eLogger.error("Error ItemDAO.checkItemByIdAndCode: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return true;
+    }
 }

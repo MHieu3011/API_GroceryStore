@@ -58,7 +58,7 @@ public class BillController extends BaseController {
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
 
-    //Thêm mới hóa đơn sử dụng body
+    //Thêm mới hóa đơn sử dụng body TỐI ƯU
     @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> create(
             @RequestBody @Valid BillRegistrationFormRequest billRegistrationFormRequest,

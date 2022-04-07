@@ -99,8 +99,14 @@ public class BIllServiceImpl extends AbstractService implements BillService {
         if (CommonUtils.checkEmpty(brand)) {
             throw new CommonException(ErrorCode.ITEM_BRAND_MUST_NOT_EMPTY, "brand must not empty");
         }
-        DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
-        DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        DateTime d1, d2;
+        try {
+            d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
+            d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "date format invalid");
+        }
+
         if (d1.compareTo(d2) > 0) {
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }

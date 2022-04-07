@@ -7,6 +7,9 @@ import com.vcc.apigrocerystore.model.request.BillRegistrationFormRequest;
 import com.vcc.apigrocerystore.policies.AbstractRule;
 import com.vcc.apigrocerystore.policies.BaseRule;
 import com.vcc.apigrocerystore.utils.CommonUtils;
+import com.vcc.apigrocerystore.utils.DateTimeUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,6 +30,11 @@ public class BillRegistrationFormCreateRule extends AbstractRule<BillRegistratio
         }
         if (CommonUtils.checkEmpty(strDate)) {
             throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "date must not empty");
+        }
+        try {
+            DateTime d = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strDate);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "date format invalid");
         }
         if (billDetails.isEmpty()) {
             throw new CommonException(ErrorCode.BILL_DETAIL_FORM_REQUEST_NOT_EMPTY, "bill detail form request not empty");

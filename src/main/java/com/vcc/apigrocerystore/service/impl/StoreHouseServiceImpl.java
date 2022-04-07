@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.service.impl;
 
 import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.cache.local.ResponseLocalCache;
+import com.vcc.apigrocerystore.dao.ItemDAO;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
@@ -29,6 +30,9 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
     private StoreHouseDAO storeHouseDAO;
 
     @Autowired
+    private ItemDAO itemDAO;
+
+    @Autowired
     @Qualifier("responseLocalCache")
     private ResponseLocalCache responseLocalCache;
 
@@ -47,6 +51,9 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         }
         if (number < 0) {
             throw new CommonException(ErrorCode.NUMBER_MUST_SMALLER_0, "number must smaller 0");
+        }
+        if (!itemDAO.checkItemByIdAndCode(idItem, codeItem)) {
+            throw new CommonException(ErrorCode.ID_INVALID, "item invalid");
         }
         try {
             DateTime d = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strDate);
@@ -96,8 +103,13 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         if (limit < 0) {
             throw new CommonException(ErrorCode.NUMBER_MUST_SMALLER_0, "limit must smaller 0");
         }
-        DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
-        DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        DateTime d1, d2;
+        try {
+            d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
+            d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "date format invalid");
+        }
         if (d1.compareTo(d2) > 0) {
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
@@ -130,8 +142,13 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
         if (CommonUtils.checkEmpty(strToDate)) {
             throw new CommonException(ErrorCode.DATE_TIME_MUST_NOT_EMPTY, "to date must not empty");
         }
-        DateTime d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
-        DateTime d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        DateTime d1, d2;
+        try {
+            d1 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strFromDate);
+            d2 = DateTimeFormat.forPattern(DateTimeUtils.DEFAULT_DATE_FORMAT).parseDateTime(strToDate);
+        } catch (Exception e) {
+            throw new CommonException(ErrorCode.DATE_TIME_INVALID, "date format invalid");
+        }
         if (d1.compareTo(d2) > 0) {
             throw new CommonException(ErrorCode.DATE_TIME_INVALID, "From date dont after to date");
         }
