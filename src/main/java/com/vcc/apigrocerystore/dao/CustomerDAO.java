@@ -6,4 +6,6 @@ import com.vcc.apigrocerystore.model.response.InfoCustomerResponse;
 public interface CustomerDAO {
 
     InfoCustomerResponse create(CustomerEntity entity) throws Exception;
+
+    boolean checkCustomerById(long id) throws Exception;
 }

@@ -9,4 +9,6 @@ public interface UserDAO {
     InfoUserResponse login(String username, String password, int status) throws Exception;
 
     void delete(String username) throws Exception;
+
+    boolean checkUserById(long id) throws Exception;
 }

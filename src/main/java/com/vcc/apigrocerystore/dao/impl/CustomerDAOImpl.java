@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @Repository
 public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
@@ -38,5 +39,30 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
             releaseConnectAndStatement(connection, statement);
         }
         return result;
+    }
+
+    @Override
+    public boolean checkCustomerById(long id) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT fullname FROM customer WHERE id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            String fullName = null;
+            while (resultSet.next()) {
+                fullName = resultSet.getString("fullname");
+            }
+            if (fullName == null)
+                return false;
+        } catch (Exception e) {
+            eLogger.error("Error CustomerDAO.checkCustomerById: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return true;
     }
 }

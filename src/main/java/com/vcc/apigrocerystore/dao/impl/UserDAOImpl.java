@@ -97,4 +97,29 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             releaseConnectAndStatement(connection, statement);
         }
     }
+
+    @Override
+    public boolean checkUserById(long id) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT fullname FROM user WHERE id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setLong(1, id);
+            resultSet = statement.executeQuery();
+            String fullName = null;
+            while (resultSet.next()) {
+                fullName = resultSet.getString("fullname");
+            }
+            if (fullName == null)
+                return false;
+        } catch (Exception e) {
+            eLogger.error("Error UserDAO.checkUserById: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return true;
+    }
 }

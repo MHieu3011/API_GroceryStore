@@ -90,7 +90,6 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
             }
             if (name == null)
                 return false;
-
         } catch (Exception e) {
             eLogger.error("Error ItemDAO.checkItemByIdAndCode: {}", e.getMessage());
         } finally {
