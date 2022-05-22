@@ -61,6 +61,7 @@ public class ItemController extends BaseController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll(
+            @RequestParam(value = "keyword", defaultValue = "name") String keyword,
             HttpServletRequest request
     ) {
         StopWatch stopWatch = new StopWatch();
@@ -71,6 +72,7 @@ public class ItemController extends BaseController {
 
             ItemFormRequest form = new ItemFormRequest();
             form.setRequestUri(requestUri);
+            form.setKeyword(keyword);
             serverResponse = itemService.findAll(form);
             strResponse = gson.toJson(serverResponse, Response.class);
             requestLogger.info("Finish ItemController.findAll {} in {}", requestUri, stopWatch.stop());

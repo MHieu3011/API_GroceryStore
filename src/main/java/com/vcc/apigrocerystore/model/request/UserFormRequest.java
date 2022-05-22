@@ -2,6 +2,7 @@ package com.vcc.apigrocerystore.model.request;
 
 public class UserFormRequest extends BaseFormRequest {
 
+    private long id;
     private String userName;
     private String fullName;
     private int sex;
@@ -9,6 +10,14 @@ public class UserFormRequest extends BaseFormRequest {
     private String address;
 
     public UserFormRequest() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUserName() {

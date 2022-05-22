@@ -12,4 +12,10 @@ public interface UserService {
     Response login(UserFormRequest form) throws Exception;
 
     Response delete(UserFormRequest form) throws Exception;
+
+    Response update(UserFormRequest form) throws Exception;
+
+    Response findAll(UserFormRequest form) throws Exception;
+
+    Response searchByUserName(UserFormRequest form) throws Exception;
 }

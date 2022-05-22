@@ -8,6 +8,7 @@ public class ItemFormRequest extends BaseFormRequest {
     private String toDate;
     private long price;
     private String brand;
+    private String keyword;
 
     public ItemFormRequest() {
     }
@@ -60,4 +61,11 @@ public class ItemFormRequest extends BaseFormRequest {
         this.brand = brand;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
 }

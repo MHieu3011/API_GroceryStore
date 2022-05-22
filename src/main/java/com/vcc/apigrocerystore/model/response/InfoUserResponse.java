@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 public class InfoUserResponse {
 
     @Expose
+    @SerializedName("id")
+    private int id;
+
+    @Expose
     @SerializedName("username")
     private String username;
 
@@ -20,6 +24,18 @@ public class InfoUserResponse {
     @Expose
     @SerializedName("address")
     private String address;
+
+    @Expose
+    @SerializedName("role")
+    private int role;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -51,5 +67,13 @@ public class InfoUserResponse {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

@@ -20,7 +20,7 @@ public class CustomerDAOImpl extends AbstractDAO implements CustomerDAO {
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO customer(fullname, sex, phonenumber) VALUES(?, ?, ?);";
+            String sql = "INSERT INTO customer(fullname, sex, phonenumber) VALUES(?, ?, ?)";
             statement = connection.prepareStatement(sql);
             statement.setString(1, entity.getFullName());
             statement.setInt(2, entity.getSex());

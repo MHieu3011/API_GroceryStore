@@ -8,7 +8,7 @@ import java.util.List;
 public interface ItemDAO {
     InfoItemResponse create(ItemEntity entity) throws Exception;
 
-    List<ItemEntity> findAll() throws Exception;
+    List<ItemEntity> findAll(String keyword) throws Exception;
 
     boolean checkItemByIdAndCode(long id, String code) throws Exception;
 }

@@ -4,6 +4,7 @@ import com.vcc.apigrocerystore.builder.Response;
 import com.vcc.apigrocerystore.cache.local.ResponseLocalCache;
 import com.vcc.apigrocerystore.dao.ItemDAO;
 import com.vcc.apigrocerystore.dao.StoreHouseDAO;
+import com.vcc.apigrocerystore.entities.ItemEntity;
 import com.vcc.apigrocerystore.entities.StoreHouseEntity;
 import com.vcc.apigrocerystore.exception.CommonException;
 import com.vcc.apigrocerystore.global.ErrorCode;
@@ -11,6 +12,7 @@ import com.vcc.apigrocerystore.model.request.StoreHouseFormRequest;
 import com.vcc.apigrocerystore.model.response.InfoItemBestSellerResponse;
 import com.vcc.apigrocerystore.model.response.InfoItemByExpireResponse;
 import com.vcc.apigrocerystore.model.response.InfoItemInStoreHouse;
+import com.vcc.apigrocerystore.process.ItemInStoreHouseProcess;
 import com.vcc.apigrocerystore.service.StoreHouseService;
 import com.vcc.apigrocerystore.utils.CommonUtils;
 import com.vcc.apigrocerystore.utils.DateTimeUtils;
@@ -21,7 +23,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class StoreHouseServiceImpl extends AbstractService implements StoreHouseService {
@@ -35,6 +39,9 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
     @Autowired
     @Qualifier("responseLocalCache")
     private ResponseLocalCache responseLocalCache;
+
+    @Autowired
+    private ItemInStoreHouseProcess process;
 
     @Override
     public Response create(StoreHouseFormRequest form) throws Exception {
@@ -187,6 +194,35 @@ public class StoreHouseServiceImpl extends AbstractService implements StoreHouse
             resultList = storeHouseDAO.findItemByExpire(limit);
 
             responseLocalCache.put(key, resultList);
+        }
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(resultList)
+                .build();
+    }
+
+    @Override
+    public Response findItemInStoreHouseMultiProcess() throws Exception {
+        CompletableFuture<List<ItemEntity>> itemFuture = process.findAllItem();
+        CompletableFuture<List<StoreHouseEntity>> storeHouseFuture = process.findAllStoreHouse();
+
+        CompletableFuture.allOf(itemFuture, storeHouseFuture);
+
+        List<StoreHouseEntity> storeHouseList = storeHouseFuture.get();
+        List<ItemEntity> itemList = itemFuture.get();
+        List<InfoItemInStoreHouse> resultList = new ArrayList<>();
+
+        for (ItemEntity item : itemList) {
+            InfoItemInStoreHouse info = new InfoItemInStoreHouse();
+            int number = 0;
+            for (StoreHouseEntity storeHouse : storeHouseList){
+                if (item.getId() == storeHouse.getIdItem()){
+                    number += storeHouse.getNumber();
+                }
+            }
+            info.setName(item.getName());
+            info.setNumber(number);
+            resultList.add(info);
         }
 
         return new Response.Builder(1, HttpStatus.OK.value())

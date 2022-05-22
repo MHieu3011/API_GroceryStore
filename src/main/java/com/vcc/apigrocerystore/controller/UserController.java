@@ -142,4 +142,97 @@ public class UserController extends BaseController {
         }
         return new ResponseEntity<>(strResponse, HttpStatus.OK);
     }
+
+    //Cập nhật thông tin nhân viên
+    @PutMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> update(
+            @RequestParam("id") long id,
+            @RequestParam("username") String userName,
+            @RequestParam("full_name") String fullName,
+            @RequestParam("sex") int sex,
+            @RequestParam("password") String password,
+            @RequestParam("address") String address,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setRequestUri(requestUri);
+            form.setId(id);
+            form.setUserName(userName);
+            form.setFullName(fullName);
+            form.setSex(sex);
+            form.setPassword(password);
+            form.setAddress(address);
+            serverResponse = userService.update(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.update {}", requestUri);
+        } catch (CommonException ce) {
+            eLogger.error("Controller.update Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
+        } catch (Exception e) {
+            eLogger.error("UserController.update error: {} in {}", e.getMessage(), stopWatch.stop());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
+    //findAll
+    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll(
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setRequestUri(requestUri);
+            serverResponse = userService.findAll(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.findAll {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller.findAll Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
+        } catch (Exception e) {
+            eLogger.error("UserController.findAll error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
+
+    //findAll
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> searchByUsername(
+            @RequestParam("key") String key,
+            HttpServletRequest request
+    ) {
+        StopWatch stopWatch = new StopWatch();
+        String requestUri = request.getRequestURI() + "?" + getRequestParams(request);
+        String strResponse;
+        Response serverResponse;
+        try {
+            UserFormRequest form = new UserFormRequest();
+            form.setRequestUri(requestUri);
+            form.setUserName(key);
+            serverResponse = userService.searchByUserName(form);
+
+            strResponse = gson.toJson(serverResponse, Response.class);
+            requestLogger.info("Finish UserController.searchByUsername {} in {}", requestUri, stopWatch.stop());
+        } catch (CommonException ce) {
+            eLogger.error("Controller.searchByUsername Error: {}", ce.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ce.getMessage());
+        } catch (Exception e) {
+            eLogger.error("UserController.searchByUsername error: {}", e.getMessage());
+            strResponse = buildFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_OCCURRED);
+        }
+        return new ResponseEntity<>(strResponse, HttpStatus.OK);
+    }
 }

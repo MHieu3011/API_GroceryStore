@@ -12,4 +12,6 @@ public interface StoreHouseService {
     Response findItemByExpire(StoreHouseFormRequest form) throws Exception;
 
     Response findItemByExpireInputNoDate(StoreHouseFormRequest form) throws Exception;
+
+    Response findItemInStoreHouseMultiProcess() throws Exception;
 }

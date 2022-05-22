@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class UserDAOImpl extends AbstractDAO implements UserDAO {
@@ -55,7 +57,7 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
         ResultSet resultSet = null;
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
-            StringBuilder sql = new StringBuilder("SELECT username, fullname, sex, address FROM user");
+            StringBuilder sql = new StringBuilder("SELECT id, username, fullname, sex, address, role FROM user");
             sql.append(" WHERE username = ? AND password = ? AND status = ?");
             statement = connection.prepareStatement(sql.toString());
             statement.setString(1, username);
@@ -63,10 +65,12 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             statement.setInt(3, status);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
+                result.setId(resultSet.getInt("id"));
                 result.setUsername(resultSet.getString("username"));
                 result.setFullName(resultSet.getString("fullname"));
                 result.setSex(resultSet.getInt("sex"));
                 result.setAddress(resultSet.getString("address"));
+                result.setRole(resultSet.getInt("role"));
             }
         } catch (Exception e) {
             eLogger.error("Error UserDAO.login: {}", e.getMessage());
@@ -121,5 +125,97 @@ public class UserDAOImpl extends AbstractDAO implements UserDAO {
             releaseResource(connection, statement, resultSet);
         }
         return true;
+    }
+
+    @Override
+    public InfoUserResponse update(UserEntity entity) throws Exception {
+        InfoUserResponse result = new InfoUserResponse();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            connection.setAutoCommit(false);
+            String sql = "UPDATE user SET username = ?, fullname = ?, sex = ?, password = ?, address = ? WHERE id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setQueryTimeout(1);
+            statement.setString(1, entity.getUserName());
+            statement.setString(2, entity.getFullName());
+            statement.setInt(3, entity.getSex());
+            statement.setString(4, entity.getPassword());
+            statement.setString(5, entity.getAddress());
+            statement.setLong(6, entity.getId());
+            statement.executeUpdate();
+            connection.commit();
+            result.setUsername(entity.getUserName());
+            result.setFullName(entity.getFullName());
+            result.setAddress(entity.getAddress());
+            result.setSex(entity.getSex());
+        } catch (Exception e) {
+            eLogger.error("Error UserDAO.update user: {}", e.getMessage());
+            if (connection != null) {
+                connection.rollback();
+            }
+        } finally {
+            releaseConnectAndStatement(connection, statement);
+        }
+        return result;
+    }
+
+    @Override
+    public List<InfoUserResponse> findAll() throws Exception {
+        List<InfoUserResponse> resultList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT id, username, fullname, sex, address FROM user WHERE status = 1";
+            statement = connection.prepareStatement(sql);
+            statement.setQueryTimeout(1);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                InfoUserResponse result = new InfoUserResponse();
+                result.setId(resultSet.getInt("id"));
+                result.setUsername(resultSet.getString("username"));
+                result.setFullName(resultSet.getString("fullname"));
+                result.setSex(resultSet.getInt("sex"));
+                result.setAddress(resultSet.getString("address"));
+                resultList.add(result);
+            }
+        } catch (Exception e) {
+            eLogger.error("Error UserDAO.findAll user: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<InfoUserResponse> searchByUsername(String key) throws Exception {
+        List<InfoUserResponse> resultList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
+            String sql = "SELECT id, username, fullname, sex, address FROM user WHERE status = 1 AND username LIKE '%" + key + "%'";
+            statement = connection.prepareStatement(sql);
+            statement.setQueryTimeout(1);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                InfoUserResponse result = new InfoUserResponse();
+                result.setId(resultSet.getInt("id"));
+                result.setUsername(resultSet.getString("username"));
+                result.setFullName(resultSet.getString("fullname"));
+                result.setSex(resultSet.getInt("sex"));
+                result.setAddress(resultSet.getString("address"));
+                resultList.add(result);
+            }
+        } catch (Exception e) {
+            eLogger.error("Error UserDAO.searchByUsername user: {}", e.getMessage());
+        } finally {
+            releaseResource(connection, statement, resultSet);
+        }
+        return resultList;
     }
 }

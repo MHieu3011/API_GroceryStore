@@ -101,7 +101,8 @@ public class ItemServiceImpl extends AbstractService implements ItemService {
         List<InfoItemResponse> resultList = (List<InfoItemResponse>) responseLocalCache.get(key);
         if (resultList == null) {
             //nếu cache không có thì lấy dữ liệu từ DAO và put cache
-            resultList = itemDAO.findAll().stream()
+            String keyword = form.getKeyword();
+            resultList = itemDAO.findAll(keyword).stream()
                     .map(entity -> itemAdapter.transform(entity))
                     .collect(Collectors.toList());
 

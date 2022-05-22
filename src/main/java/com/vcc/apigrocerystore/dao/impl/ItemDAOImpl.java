@@ -51,14 +51,14 @@ public class ItemDAOImpl extends AbstractDAO implements ItemDAO {
     }
 
     @Override
-    public List<ItemEntity> findAll() throws Exception {
+    public List<ItemEntity> findAll(String keyword) throws Exception {
         List<ItemEntity> resultList = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = MySQLConnectionFactory.getInstance().getMySQLConnection();
-            String sql = "SELECT code, name, fromdate, todate, price, brand FROM item";
+            String sql = "SELECT code, name, fromdate, todate, price, brand FROM item ORDER BY " + keyword;
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {

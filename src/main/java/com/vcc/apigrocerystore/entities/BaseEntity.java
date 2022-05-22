@@ -10,6 +10,10 @@ public class BaseEntity {
     private String createdBy;
     private String modifiedBy;
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }

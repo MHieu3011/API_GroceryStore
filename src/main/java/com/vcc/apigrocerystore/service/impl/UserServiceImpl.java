@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl extends AbstractService implements UserService {
 
@@ -156,6 +158,59 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
         return new Response.Builder(1, HttpStatus.OK.value())
                 .buildMessage("Delete user successfully")
+                .build();
+    }
+
+    @Override
+    public Response update(UserFormRequest form) throws Exception {
+        //validate dữ liệu đầu vào
+        String username = form.getUserName();
+        String fullName = form.getFullName();
+        int sex = form.getSex();
+        String password = form.getPassword();
+        if (CommonUtils.checkEmpty(username)) {
+            throw new CommonException(ErrorCode.USER_NAME_MUST_NOT_EMPTY, "username must not empty");
+        }
+        if (CommonUtils.checkEmpty(fullName)) {
+            throw new CommonException(ErrorCode.FULL_NAME_MUST_NOT_EMPTY, "full name must not empty");
+        }
+        if (CommonUtils.checkEmpty(password)) {
+            throw new CommonException(ErrorCode.PASS_WORD_MUST_NOT_EMPTY, "password must not empty");
+        }
+        if (sex != 0 && sex != 1) {
+            throw new CommonException(ErrorCode.SEX_INVALID, "sex invalid");
+        }
+
+        UserEntity entity = new UserEntity();
+        entity.setId(form.getId());
+        entity.setUserName(username);
+        entity.setFullName(fullName);
+        entity.setSex(sex);
+        entity.setPassword(password);
+        entity.setAddress(form.getAddress());
+        InfoUserResponse result = userDAO.update(entity);
+
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(result)
+                .buildMessage("Update User successfully")
+                .build();
+    }
+
+    @Override
+    public Response findAll(UserFormRequest form) throws Exception {
+        List<InfoUserResponse> resultList = userDAO.findAll();
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(resultList)
+                .buildMessage("findAll User successfully")
+                .build();
+    }
+
+    @Override
+    public Response searchByUserName(UserFormRequest form) throws Exception {
+        List<InfoUserResponse> resultList = userDAO.searchByUsername(form.getUserName());
+        return new Response.Builder(1, HttpStatus.OK.value())
+                .buildData(resultList)
+                .buildMessage("searchByUserName successfully")
                 .build();
     }
 }
